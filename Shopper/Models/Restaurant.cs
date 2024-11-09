@@ -20,7 +20,7 @@
         public int Id { get; set; }
         public int RestaurantId { get; set; }
         public string Name { get; set; }
-        public string Photo { get; set; }
+        public string? Photo { get; set; }
         public decimal Price { get; set; }
         public Restaurant Restaurant { get; set; }
     }
