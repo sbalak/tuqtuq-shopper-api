@@ -46,7 +46,8 @@ namespace Shopper.Controllers
                 {
                     RestaurantId = cart.RestaurantId,
                     UserId = userId,
-                    TotalPrice = foodItems.Sum(x => x.TotalPrice)
+                    TotalPrice = foodItems.Sum(x => x.TotalPrice),
+                    DateOrdered = DateTime.Now
                 };
 
                 _context.Orders.Add(order);
