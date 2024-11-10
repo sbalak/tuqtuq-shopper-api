@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Shopper.Models;
 using Shopper.ViewModels;
 
@@ -17,10 +18,39 @@ namespace Shopper.Controllers
             _context = context;
         }
 
+        /*
+         
+        SELECT [Id], [Name], [Photo], [LegalName], [AddressLine1], [AddressLine2], [Locality], [City], [Postcode], [Cuisine], [Latitude], [Longitude], ROUND([Distance], 2) AS [Distance]
+        FROM (
+	        SELECT z.[Id], z.[Name], z.[Photo], z.[LegalName], z.[AddressLine1], z.[AddressLine2], z.[Locality], z.[City], z.[Postcode], z.[Cuisine], z.[Latitude], z.[Longitude], p.[Radius],
+		           p.[DistanceUnit]
+				        * DEGREES(ACOS(LEAST(1.0, COS(RADIANS(p.[LatPoint]))
+                        * COS(RADIANS(z.[Latitude]))
+                        * COS(RADIANS(p.[LongPoint] - z.[Longitude]))
+                        + SIN(RADIANS(p.[LatPoint]))
+                        * SIN(RADIANS(z.[Latitude]))))) AS [Distance]
+	        FROM [Restaurants] AS z
+	        JOIN (
+		        SELECT 13.089877255747481 AS [LatPoint], 
+		               80.19443538203495 AS [LongPoint],
+			           50.0 AS [Radius],
+			           111.045 AS [DistanceUnit]
+            ) AS p ON 1=1
+	        WHERE z.[Latitude] BETWEEN p.[LatPoint] - (p.[Radius] / p.[DistanceUnit]) AND 
+	                                  p.[LatPoint] + (p.[Radius] / p.[DistanceUnit]) AND
+		          z.[Longitude] BETWEEN p.[LongPoint] - (p.[Radius] / (p.[DistanceUnit] * COS(RADIANS(p.[LatPoint])))) AND 
+							           p.[LongPoint] + (p.[Radius] / (p.[DistanceUnit] * COS(RADIANS(p.[LatPoint]))))
+        ) AS d
+        WHERE [Distance] <= [Radius]
+        ORDER BY [Distance]
+
+        */
+
+
         [HttpGet("List")]
-        public List<Restaurant> List()
+        public List<RestaurantListViewModel> List()
         {
-            var restaurants = _context.Restaurants.ToList();
+            var restaurants = _context.Database.SqlQuery<RestaurantListViewModel>($"SELECT [Id], [Name], [Photo], [LegalName], [AddressLine1], [AddressLine2], [Locality], [City], [Postcode], [Cuisine], [Latitude], [Longitude], ROUND([Distance], 2) AS [Distance] FROM (SELECT z.[Id], z.[Name], z.[Photo], z.[LegalName], z.[AddressLine1], z.[AddressLine2], z.[Locality], z.[City], z.[Postcode], z.[Cuisine], z.[Latitude], z.[Longitude], p.[Radius], p.[DistanceUnit] * DEGREES(ACOS(LEAST(1.0, COS(RADIANS(p.[LatPoint])) * COS(RADIANS(z.[Latitude])) * COS(RADIANS(p.[LongPoint] - z.[Longitude])) + SIN(RADIANS(p.[LatPoint])) * SIN(RADIANS(z.[Latitude]))))) AS [Distance] FROM [Restaurants] AS z JOIN (SELECT 13.089877255747481 AS [LatPoint], 80.19443538203495 AS [LongPoint], 50.0 AS [Radius], 111.045 AS [DistanceUnit]) AS p ON 1=1 WHERE z.[Latitude] BETWEEN p.[LatPoint] - (p.[Radius] / p.[DistanceUnit]) AND  p.[LatPoint] + (p.[Radius] / p.[DistanceUnit]) AND z.[Longitude] BETWEEN p.[LongPoint] - (p.[Radius] / (p.[DistanceUnit] * COS(RADIANS(p.[LatPoint])))) AND p.[LongPoint] + (p.[Radius] / (p.[DistanceUnit] * COS(RADIANS(p.[LatPoint]))))) AS d WHERE [Distance] <= [Radius] ORDER BY [Distance]").ToList();
             return restaurants;
         }
 
