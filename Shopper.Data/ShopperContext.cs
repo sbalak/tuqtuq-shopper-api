@@ -1,14 +1,15 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Shopper.Data;
 using System.Reflection.Emit;
 
-namespace Shopper.Models
+namespace Shopper.Data
 {
     public class ShopperContext : IdentityDbContext<User, Role, int, UserClaim, UserRole, UserLogin, RoleClaim, UserToken>
     {
-        public ShopperContext (DbContextOptions<ShopperContext> options) : base(options) 
-        { 
+        public ShopperContext(DbContextOptions<ShopperContext> options) : base(options)
+        {
         }
 
         public DbSet<FoodItem> FoodItems { get; set; }

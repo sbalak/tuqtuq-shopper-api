@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 
-namespace Shopper.Models
+namespace Shopper.Data
 {
     public class User : IdentityUser<int>
     {

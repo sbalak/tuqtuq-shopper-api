@@ -1,20 +1,20 @@
-﻿namespace Shopper.ViewModels
+﻿namespace Shopper.Infrastructure
 {
-    public class CartDetailsViewModel
+    public class OrderDetailsModel
     {
-        public CartDetailsViewModel()
+        public OrderDetailsModel()
         {
-            FoodItems = new List<CartDetailsFoodViewModel>();
+            OrderItems = new List<OrderDetailsFoodModel>();
         }
         public int RestaurantId { get; set; }
         public string RestaurantName { get; set; }
         public string RestaurantLocality { get; set; }
         public int TotalQuantity { get; set; }
         public decimal TotalPrice { get; set; }
-        public List<CartDetailsFoodViewModel> FoodItems { get; set; }
+        public List<OrderDetailsFoodModel> OrderItems { get; set; }
     }
     
-    public class CartDetailsFoodViewModel
+    public class OrderDetailsFoodModel
     {
         public int FoodItemId { get; set; }
         public string FoodName { get; set; }

@@ -1,6 +1,6 @@
-﻿namespace Shopper.ViewModels
+﻿namespace Shopper.Infrastructure
 {
-    public class UserDetailsViewModel
+    public class UserDetailsModel
     {
         string FirstName { get; set; }
         string LastName { get; set; }
@@ -13,7 +13,7 @@
         bool PhoneNumberConfirmed { get; set; }
     }
 
-    public class UserCoordinatesViewModel
+    public class UserCoordinatesModel
     {
         public double? Latitude { get; set; }
         public double? Longitude { get; set; }

@@ -1,7 +1,9 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
-using Shopper.Models;
+using Shopper.Data;
+using Shopper.Infrastructure;
+using Shopper.Infrastructure.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -48,6 +50,11 @@ builder.Services.AddSwaggerGen(opt =>
             }
         });
     });
+
+builder.Services.AddTransient<ICartService, CartService>();
+builder.Services.AddTransient<IOrderService, OrderService>();
+builder.Services.AddTransient<IRestaurantService, RestaurantService>();
+builder.Services.AddTransient<IUserService, UserService>();
 
 var app = builder.Build();
 

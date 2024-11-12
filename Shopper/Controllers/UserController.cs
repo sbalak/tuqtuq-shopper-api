@@ -1,8 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Shopper.Models;
-using Shopper.ViewModels;
+using Shopper.Data;
+using Shopper.Infrastructure;
 
 namespace Shopper.Controllers
 {
@@ -11,59 +10,45 @@ namespace Shopper.Controllers
     [Authorize]
     public class UserController : ControllerBase
     {
-        private ShopperContext _context;
+        private IUserService _user;
 
-        public UserController(ShopperContext context)
+        public UserController(IUserService user)
         {
-            _context = context;
+            _user = user;
         }
 
         [HttpGet("Id")]
-        public int Id(string email)
+        public async Task<int> Id(string email)
         {
-            var userId = _context.Users.Where(x => x.Email == email).Select(x => x.Id).FirstOrDefault();
+            var userId = await _user.GetUserId(email);
             return userId;
         }
 
         [HttpGet("Details")]
-        public User Details(int userId)
+        public async Task<User> Details(int userId)
         {
-            var user = _context.Users.Where(x => x.Id == userId).FirstOrDefault();
+            var user = await _user.GetUser(userId);
             return user;
         }
 
         [HttpPost("Update")]
-        public bool Update(int userId, string firstName, string lastName)
+        public async Task<bool> Update(int userId, string firstName, string lastName)
         {
-            var user = _context.Users.Where(x => x.Id == userId).FirstOrDefault();
-
-            user.FirstName = firstName;
-            user.LastName = lastName;
-
-            _context.Users.Update(user);
-            _context.SaveChanges();
-
+            await _user.Update(userId, firstName, lastName);
             return true;
         }
 
         [HttpGet("Coordinates")]
-        public dynamic Coordinates(int userId)
+        public async Task<UserCoordinatesModel> Coordinates(int userId)
         {
-            var coordinates = _context.Users.Where(x => x.Id == userId).Select(x => new UserCoordinatesViewModel { Latitude = x.Latitude, Longitude = x.Longitude }).FirstOrDefault();
+            var coordinates = await _user.GetCoordinates(userId);
             return coordinates;
         }
 
         [HttpPost("SetCoordinates")]
-        public bool SetCoordinates(int userId, double latitude, double longitude)
+        public async Task<bool> SetCoordinates(int userId, double latitude, double longitude)
         {
-            var user = _context.Users.Where(x => x.Id == userId).FirstOrDefault();
-
-            user.Latitude = latitude;
-            user.Longitude = longitude;
-
-            _context.Users.Update(user);
-            _context.SaveChanges();
-
+            await _user.SetCoordinates(userId, latitude, longitude);
             return true;
         }
     }

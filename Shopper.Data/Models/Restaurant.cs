@@ -1,6 +1,6 @@
-﻿namespace Shopper.ViewModels
+﻿namespace Shopper.Data
 {
-    public class RestaurantListViewModel
+    public class Restaurant
     {
         public int Id { get; set; }
         public string Name { get; set; }
@@ -14,6 +14,14 @@
         public string Cuisine { get; set; }
         public double Latitude { get; set; }
         public double Longitude { get; set; }
-        public double Distance { get; set; }
+    }
+    public class FoodItem
+    {
+        public int Id { get; set; }
+        public int RestaurantId { get; set; }
+        public string Name { get; set; }
+        public string? Photo { get; set; }
+        public decimal Price { get; set; }
+        public Restaurant Restaurant { get; set; }
     }
 }

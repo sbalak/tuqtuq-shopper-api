@@ -1,4 +1,4 @@
-﻿namespace Shopper.Models
+﻿namespace Shopper.Data
 {
     public class Order
     {
