@@ -29,5 +29,12 @@ namespace Shopper.Controllers
             var restaurant = await _restaurant.GetRestaurantMenu(userId, restaurantId);
             return restaurant;
         }
+
+        [HttpGet("Filter")]
+        public async Task<RestaurantMenuModel> Details(int userId, int restaurantId, string searchText)
+        {
+            var restaurant = await _restaurant.FilterRestaurantMenu(userId, restaurantId, searchText);
+            return restaurant;
+        }
     }
 }
