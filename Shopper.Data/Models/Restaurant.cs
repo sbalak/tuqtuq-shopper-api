@@ -14,14 +14,32 @@
         public string Cuisine { get; set; }
         public double Latitude { get; set; }
         public double Longitude { get; set; }
+        public bool IsAvailable { get; set; }
+        public bool IsDisabled { get; set; }
+        public DateTime DateCreated { get; set; }
+        public DateTime? DateUpdated { get; set; }
+        public DateTime? DateDisabled { get; set; }
+    }
+    public class Category
+    {
+        public int Id { get; set; }
+        public int RestaurantId { get; set; }
+        public string Name { get; set; }
+        public int Order { get; set; }
+        public Restaurant Restaurant { get; set; }
     }
     public class FoodItem
     {
         public int Id { get; set; }
         public int RestaurantId { get; set; }
+        public int CategoryId { get; set; }
         public string Name { get; set; }
         public string? Photo { get; set; }
         public decimal Price { get; set; }
+        public bool IsAvailable { get; set; }
+        public DateTime DateCreated { get; set; }
+        public DateTime? DateUpdated { get; set; }
         public Restaurant Restaurant { get; set; }
+        public Category Category { get; set; }
     }
 }

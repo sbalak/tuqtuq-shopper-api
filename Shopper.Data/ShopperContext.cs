@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using Shopper.Data;
 using System.Reflection.Emit;
 
 namespace Shopper.Data
@@ -12,9 +11,11 @@ namespace Shopper.Data
         {
         }
 
+        public DbSet<Category> Categories { get; set; }
         public DbSet<FoodItem> FoodItems { get; set; }
         public DbSet<Order> Orders { get; set; }
         public DbSet<OrderItem> OrderItems { get; set; }
+        public DbSet<Rating> Ratings { get; set; }
         public DbSet<Restaurant> Restaurants { get; set; }
         public DbSet<Cart> Carts { get; set; }
         public DbSet<CartItem> CartItems { get; set; }
@@ -38,13 +39,31 @@ namespace Shopper.Data
 
             builder.Entity<CartItem>()
             .HasOne(r => r.FoodItem)
-            .WithOne()
+            .WithMany()
             .OnDelete(DeleteBehavior.NoAction);
 
             builder.Entity<OrderItem>()
             .HasOne(r => r.FoodItem)
-            .WithOne()
+            .WithMany()
             .OnDelete(DeleteBehavior.NoAction);
+
+            builder.Entity<FoodItem>()
+            .HasOne(r => r.Restaurant)
+            .WithMany()
+            .OnDelete(DeleteBehavior.NoAction);
+
+            builder.Entity<Order>()
+            .Property(r => r.Amount)
+            .HasPrecision(18, 2);
+
+            builder.Entity<OrderItem>()
+            .Property(r => r.Price)
+            .HasPrecision(18, 2);
+
+            builder.Entity<FoodItem>()
+            .Property(r => r.Price)
+            .HasPrecision(18, 2);
+
         }
     }
 }

@@ -15,7 +15,7 @@ namespace Shopper.Infrastructure
         public async Task<RestaurantMenuModel> GetRestaurantMenu(int userId, int restaurantId)
         {
             RestaurantMenuModel model = new RestaurantMenuModel();
-            int totalQuantity = 0; decimal totalPrice = 0;
+            int totalQuantity = 0; decimal totalAmount = 0;
 
             var restaurant = await _context.Restaurants.Where(x => x.Id == restaurantId).Select(x => new
             {
@@ -42,7 +42,7 @@ namespace Shopper.Infrastructure
                                             Id = x.Id,
                                             Name = x.Name,
                                             Photo = x.Photo,
-                                            ItemPrice = x.Price
+                                            Price = x.Price
                                         }).ToList();
 
                 var cartItems = (from m in _context.Carts
@@ -53,8 +53,8 @@ namespace Shopper.Infrastructure
                                  {
                                      FoodItemId = n.FoodItemId,
                                      FoodName = o.Name,
-                                     ItemPrice = o.Price,
-                                     TotalPrice = n.Quantity * o.Price,
+                                     Price = o.Price,
+                                     Amount = n.Quantity * o.Price,
                                      Quantity = n.Quantity
                                  }).ToList();
 
@@ -64,10 +64,10 @@ namespace Shopper.Infrastructure
 
                     if (cartItem != null)
                     {
-                        foodItem.TotalPrice = cartItem.Quantity * foodItem.ItemPrice;
+                        foodItem.Amount = cartItem.Quantity * foodItem.Price;
                         foodItem.Quantity = cartItem.Quantity;
 
-                        totalPrice += foodItem.TotalPrice;
+                        totalAmount += foodItem.Amount;
                         totalQuantity += foodItem.Quantity;
                     }
                 }
@@ -86,7 +86,7 @@ namespace Shopper.Infrastructure
                 model.Longitude = restaurant.Longitude;
                 model.FoodItems = foodItems;
                 model.TotalQuantity = totalQuantity;
-                model.TotalPrice = totalPrice;
+                model.TotalAmount = totalAmount;
             }
 
             return model;
@@ -95,7 +95,7 @@ namespace Shopper.Infrastructure
         public async Task<RestaurantMenuModel> FilterRestaurantMenu(int userId, int restaurantId, string searchText)
         {
             RestaurantMenuModel model = new RestaurantMenuModel();
-            int totalQuantity = 0; decimal totalPrice = 0;
+            int totalQuantity = 0; decimal totalAmount = 0;
 
             var restaurant = await _context.Restaurants.Where(x => x.Id == restaurantId).Select(x => new
             {
@@ -122,7 +122,7 @@ namespace Shopper.Infrastructure
                                             Id = x.Id,
                                             Name = x.Name,
                                             Photo = x.Photo,
-                                            ItemPrice = x.Price
+                                            Price = x.Price
                                         }).ToList();
 
                 var cartItems = (from m in _context.Carts
@@ -133,8 +133,8 @@ namespace Shopper.Infrastructure
                                  {
                                      FoodItemId = n.FoodItemId,
                                      FoodName = o.Name,
-                                     ItemPrice = o.Price,
-                                     TotalPrice = n.Quantity * o.Price,
+                                     Price = o.Price,
+                                     Amount = n.Quantity * o.Price,
                                      Quantity = n.Quantity
                                  }).ToList();
 
@@ -144,10 +144,10 @@ namespace Shopper.Infrastructure
 
                     if (cartItem != null)
                     {
-                        foodItem.TotalPrice = cartItem.Quantity * foodItem.ItemPrice;
+                        foodItem.Amount = cartItem.Quantity * foodItem.Price;
                         foodItem.Quantity = cartItem.Quantity;
 
-                        totalPrice += foodItem.TotalPrice;
+                        totalAmount += foodItem.Amount;
                         totalQuantity += foodItem.Quantity;
                     }
                 }
@@ -166,7 +166,7 @@ namespace Shopper.Infrastructure
                 model.Longitude = restaurant.Longitude;
                 model.FoodItems = foodItems;
                 model.TotalQuantity = totalQuantity;
-                model.TotalPrice = totalPrice;
+                model.TotalAmount = totalAmount;
             }
 
             return model;

@@ -25,8 +25,8 @@ namespace Shopper.Infrastructure
                                  FoodItemId = n.FoodItemId,
                                  FoodName = o.Name,
                                  Quantity = n.Quantity,
-                                 ItemPrice = o.Price,
-                                 TotalPrice = n.Quantity * o.Price
+                                 Price = o.Price,
+                                 Amount = n.Quantity * o.Price
                              }).ToListAsync();
 
             if (foodItems.Count > 0)
@@ -48,7 +48,7 @@ namespace Shopper.Infrastructure
 
             cart.FoodItems = foodItems;
             cart.TotalQuantity = foodItems.Sum(x => x.Quantity);
-            cart.TotalPrice = foodItems.Sum(x => x.TotalPrice);
+            cart.TotalAmount = foodItems.Sum(x => x.Amount);
 
             return cart;
         }
@@ -63,7 +63,8 @@ namespace Shopper.Infrastructure
                 Cart newCart = new Cart()
                 {
                     UserId = userId,
-                    RestaurantId = restaurantId
+                    RestaurantId = restaurantId,
+                    DateCreated = DateTime.Now
                 };
 
                 await _context.Carts.AddAsync(newCart);
@@ -123,7 +124,8 @@ namespace Shopper.Infrastructure
                     Cart newCart = new Cart()
                     {
                         UserId = userId,
-                        RestaurantId = restaurantId
+                        RestaurantId = restaurantId,
+                        DateCreated = DateTime.Now
                     };
 
                     await _context.Carts.AddAsync(newCart);

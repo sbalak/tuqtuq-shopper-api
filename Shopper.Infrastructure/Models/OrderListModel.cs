@@ -10,7 +10,7 @@
         public int RestaurantId { get; set; }
         public string RestaurantName { get; set; }
         public string RestaurantLocality { get; set; }
-        public decimal TotalPrice { get; set; }
+        public decimal TotalAmount { get; set; }
         public List<OrderListFoodModel> OrderItems { get; set; }
     }
 

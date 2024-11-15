@@ -23,7 +23,7 @@ namespace Shopper.Infrastructure.Services
                                  RestaurantId = n.Id,
                                  RestaurantName = n.Name,
                                  RestaurantLocality = n.Locality,
-                                 TotalPrice = m.TotalPrice
+                                 TotalAmount = m.Amount
                              }).ToListAsync();
 
             foreach (var order in orderList)
@@ -57,8 +57,8 @@ namespace Shopper.Infrastructure.Services
                                   FoodItemId = n.FoodItemId,
                                   FoodName = o.Name,
                                   Quantity = n.Quantity,
-                                  ItemPrice = o.Price,
-                                  TotalPrice = n.Quantity * o.Price
+                                  Price = o.Price,
+                                  Amount = n.Quantity * o.Price
                               }).ToListAsync();
 
             if (orderItems.Count > 0)
@@ -71,13 +71,13 @@ namespace Shopper.Infrastructure.Services
                                         RestaurantId = n.Id,
                                         RestaurantName = n.Name,
                                         RestaurantLocality = n.Locality,
-                                        m.TotalPrice
+                                        m.Amount
                                     }).FirstOrDefaultAsync();
 
                 model.RestaurantId = orderDetails.RestaurantId;
                 model.RestaurantName = orderDetails.RestaurantName;
                 model.RestaurantLocality = orderDetails.RestaurantLocality;
-                model.TotalPrice = orderDetails.TotalPrice;
+                model.TotalAmount = orderDetails.Amount;
             }
 
             model.OrderItems = orderItems;
@@ -104,8 +104,8 @@ namespace Shopper.Infrastructure.Services
                                  {
                                      FoodItemId = n.FoodItemId,
                                      FoodName = o.Name,
-                                     ItemPrice = o.Price,
-                                     TotalPrice = n.Quantity * o.Price,
+                                     Price = o.Price,
+                                     Amount = n.Quantity * o.Price,
                                      Quantity = n.Quantity
                                  }).ToListAsync();
 
@@ -114,7 +114,7 @@ namespace Shopper.Infrastructure.Services
                 {
                     RestaurantId = cart.RestaurantId,
                     UserId = userId,
-                    TotalPrice = foodItems.Sum(x => x.TotalPrice),
+                    Amount = foodItems.Sum(x => x.Amount),
                     DateOrdered = DateTime.Now
                 };
 
@@ -128,7 +128,7 @@ namespace Shopper.Infrastructure.Services
                         FoodItemId = item.FoodItemId,
                         OrderId = order.Id,
                         Quantity = item.Quantity,
-                        Price = item.TotalPrice
+                        Price = item.Amount
                     };
 
                     orderItems.Add(orderItem);

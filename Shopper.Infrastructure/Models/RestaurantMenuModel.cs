@@ -19,7 +19,7 @@
         public double Latitude { get; set; }
         public double Longitude { get; set; }
         public int TotalQuantity { get; set; }
-        public decimal TotalPrice { get; set; }
+        public decimal TotalAmount { get; set; }
         public List<RestaurantMenuFoodModel> FoodItems { get; set; }
     }
     
@@ -29,7 +29,7 @@
         public string Name { get; set; }
         public string? Photo { get; set; }
         public int Quantity { get; set; }
-        public decimal ItemPrice { get; set; }
-        public decimal TotalPrice { get; set; }
+        public decimal Price { get; set; }
+        public decimal Amount { get; set; }
     }
 }

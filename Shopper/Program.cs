@@ -8,7 +8,12 @@ using Shopper.Infrastructure.Services;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddAuthentication(IdentityConstants.BearerScheme)
-    .AddBearerToken(IdentityConstants.BearerScheme);
+    .AddBearerToken(IdentityConstants.BearerScheme
+    //, o =>
+    //{
+    //    o.BearerTokenExpiration = TimeSpan.FromSeconds(60);
+    //}
+    );
     //.AddCookie(IdentityConstants.ApplicationScheme);
 
 builder.Services.AddAuthorization();
