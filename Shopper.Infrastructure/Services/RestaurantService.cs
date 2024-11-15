@@ -22,15 +22,9 @@ namespace Shopper.Infrastructure
                 x.Id,
                 x.Name,
                 x.Photo,
-                x.LegalName,
-                x.AddressLine1,
-                x.AddressLine2,
                 x.Locality,
                 x.City,
-                x.Postcode,
-                x.Cuisine,
-                x.Latitude,
-                x.Longitude
+                x.Cuisine
             }).FirstOrDefaultAsync();
 
             if (restaurant != null)
@@ -75,15 +69,9 @@ namespace Shopper.Infrastructure
                 model.Id = restaurant.Id;
                 model.Name = restaurant.Name;
                 model.Photo = restaurant.Photo;
-                model.LegalName = restaurant.LegalName;
-                model.AddressLine1 = restaurant.AddressLine1;
-                model.AddressLine2 = restaurant.AddressLine2;
                 model.Locality = restaurant.Locality;
                 model.City = restaurant.City;
-                model.Postcode = restaurant.Postcode;
                 model.Cuisine = restaurant.Cuisine;
-                model.Latitude = restaurant.Latitude;
-                model.Longitude = restaurant.Longitude;
                 model.FoodItems = foodItems;
                 model.TotalQuantity = totalQuantity;
                 model.TotalAmount = totalAmount;
@@ -102,15 +90,9 @@ namespace Shopper.Infrastructure
                 x.Id,
                 x.Name,
                 x.Photo,
-                x.LegalName,
-                x.AddressLine1,
-                x.AddressLine2,
                 x.Locality,
                 x.City,
-                x.Postcode,
-                x.Cuisine,
-                x.Latitude,
-                x.Longitude
+                x.Cuisine
             }).FirstOrDefaultAsync();
 
             if (restaurant != null)
@@ -155,15 +137,9 @@ namespace Shopper.Infrastructure
                 model.Id = restaurant.Id;
                 model.Name = restaurant.Name;
                 model.Photo = restaurant.Photo;
-                model.LegalName = restaurant.LegalName;
-                model.AddressLine1 = restaurant.AddressLine1;
-                model.AddressLine2 = restaurant.AddressLine2;
                 model.Locality = restaurant.Locality;
                 model.City = restaurant.City;
-                model.Postcode = restaurant.Postcode;
                 model.Cuisine = restaurant.Cuisine;
-                model.Latitude = restaurant.Latitude;
-                model.Longitude = restaurant.Longitude;
                 model.FoodItems = foodItems;
                 model.TotalQuantity = totalQuantity;
                 model.TotalAmount = totalAmount;
