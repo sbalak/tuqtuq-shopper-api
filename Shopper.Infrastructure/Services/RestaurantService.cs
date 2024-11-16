@@ -12,141 +12,194 @@ namespace Shopper.Infrastructure
             _context = context;
         }
 
-        public async Task<RestaurantMenuModel> GetRestaurantMenu(int userId, int restaurantId)
+        public async Task<RestaurantModel> GetRestaurant(int restaurantId)
         {
-            RestaurantMenuModel model = new RestaurantMenuModel();
-            int totalQuantity = 0; decimal totalAmount = 0;
-
-            var restaurant = await _context.Restaurants.Where(x => x.Id == restaurantId).Select(x => new
+            var restaurant = await _context.Restaurants.Where(x => x.Id== restaurantId).Select(x => new RestaurantModel
             {
-                x.Id,
-                x.Name,
-                x.Photo,
-                x.Locality,
-                x.City,
-                x.Cuisine
+                Id = x.Id,
+                Name = x.Name,
+                Photo = x.Photo,
+                Locality = x.Locality,
+                City = x.City,
+                Cuisine = x.Cuisine
             }).FirstOrDefaultAsync();
 
-            if (restaurant != null)
-            {
-
-                var foodItems = _context.FoodItems.Where(x => x.RestaurantId == restaurantId)
-                                        .Select(x => new RestaurantMenuFoodModel
-                                        {
-                                            Id = x.Id,
-                                            Name = x.Name,
-                                            Photo = x.Photo,
-                                            Price = x.Price
-                                        }).ToList();
-
-                var cartItems = (from m in _context.Carts
-                                 join n in _context.CartItems on m.Id equals n.CartId
-                                 join o in _context.FoodItems on n.FoodItemId equals o.Id
-                                 where m.UserId == userId
-                                 select new CartDetailsFoodModel
-                                 {
-                                     FoodItemId = n.FoodItemId,
-                                     FoodName = o.Name,
-                                     Price = o.Price,
-                                     Amount = n.Quantity * o.Price,
-                                     Quantity = n.Quantity
-                                 }).ToList();
-
-                foreach (var foodItem in foodItems)
-                {
-                    var cartItem = cartItems.Where(x => x.FoodItemId == foodItem.Id && x.Quantity > 0).FirstOrDefault();
-
-                    if (cartItem != null)
-                    {
-                        foodItem.Amount = cartItem.Quantity * foodItem.Price;
-                        foodItem.Quantity = cartItem.Quantity;
-
-                        totalAmount += foodItem.Amount;
-                        totalQuantity += foodItem.Quantity;
-                    }
-                }
-
-                model.Id = restaurant.Id;
-                model.Name = restaurant.Name;
-                model.Photo = restaurant.Photo;
-                model.Locality = restaurant.Locality;
-                model.City = restaurant.City;
-                model.Cuisine = restaurant.Cuisine;
-                model.FoodItems = foodItems;
-                model.TotalQuantity = totalQuantity;
-                model.TotalAmount = totalAmount;
-            }
-
-            return model;
+            return restaurant;
         }
 
-        public async Task<RestaurantMenuModel> FilterRestaurantMenu(int userId, int restaurantId, string searchText)
+        public async Task<List<FoodItemModel>> GetFoodItems(int userId, int restaurantId)
         {
-            RestaurantMenuModel model = new RestaurantMenuModel();
-            int totalQuantity = 0; decimal totalAmount = 0;
 
-            var restaurant = await _context.Restaurants.Where(x => x.Id == restaurantId).Select(x => new
+            var foodItems = await _context.FoodItems.Where(x => x.RestaurantId == restaurantId)
+                                    .Select(x => new FoodItemModel
+                                    {
+                                        Id = x.Id,
+                                        Name = x.Name,
+                                        Description = x.Description,
+                                        Type = x.Type,
+                                        Photo = x.Photo,
+                                        Price = x.Price
+                                    }).ToListAsync();
+
+            var cartItems = await (from m in _context.Carts
+                             join n in _context.CartItems on m.Id equals n.CartId
+                             join o in _context.FoodItems on n.FoodItemId equals o.Id
+                             where m.UserId == userId
+                             select new CartItemModel
+                             {
+                                 FoodItemId = n.FoodItemId,
+                                 Price = o.Price,
+                                 Quantity = n.Quantity,
+                                 Amount = n.Quantity * o.Price
+                             }).ToListAsync();
+
+            foreach (var foodItem in foodItems)
             {
-                x.Id,
-                x.Name,
-                x.Photo,
-                x.Locality,
-                x.City,
-                x.Cuisine
-            }).FirstOrDefaultAsync();
+                var cartItem = cartItems.Where(x => x.FoodItemId == foodItem.Id && x.Quantity > 0).FirstOrDefault();
 
-            if (restaurant != null)
-            {
-
-                var foodItems = _context.FoodItems.Where(x => x.RestaurantId == restaurantId && x.Name.Contains(searchText))
-                                        .Select(x => new RestaurantMenuFoodModel
-                                        {
-                                            Id = x.Id,
-                                            Name = x.Name,
-                                            Photo = x.Photo,
-                                            Price = x.Price
-                                        }).ToList();
-
-                var cartItems = (from m in _context.Carts
-                                 join n in _context.CartItems on m.Id equals n.CartId
-                                 join o in _context.FoodItems on n.FoodItemId equals o.Id
-                                 where m.UserId == userId
-                                 select new CartDetailsFoodModel
-                                 {
-                                     FoodItemId = n.FoodItemId,
-                                     FoodName = o.Name,
-                                     Price = o.Price,
-                                     Amount = n.Quantity * o.Price,
-                                     Quantity = n.Quantity
-                                 }).ToList();
-
-                foreach (var foodItem in foodItems)
+                if (cartItem != null)
                 {
-                    var cartItem = cartItems.Where(x => x.FoodItemId == foodItem.Id && x.Quantity > 0).FirstOrDefault();
-
-                    if (cartItem != null)
-                    {
-                        foodItem.Amount = cartItem.Quantity * foodItem.Price;
-                        foodItem.Quantity = cartItem.Quantity;
-
-                        totalAmount += foodItem.Amount;
-                        totalQuantity += foodItem.Quantity;
-                    }
+                    foodItem.Quantity = cartItem.Quantity;
+                    foodItem.Amount = cartItem.Amount;
                 }
-
-                model.Id = restaurant.Id;
-                model.Name = restaurant.Name;
-                model.Photo = restaurant.Photo;
-                model.Locality = restaurant.Locality;
-                model.City = restaurant.City;
-                model.Cuisine = restaurant.Cuisine;
-                model.FoodItems = foodItems;
-                model.TotalQuantity = totalQuantity;
-                model.TotalAmount = totalAmount;
             }
 
-            return model;
+            return foodItems;
         }
+
+        //public async Task<RestaurantMenuModel> GetRestaurantMenu(int userId, int restaurantId)
+        //{
+        //    RestaurantMenuModel menu = new RestaurantMenuModel();
+        //    List<RestaurantMenuFoodModel> menuFoods = new List<RestaurantMenuFoodModel>();
+        //    int totalQuantity = 0; decimal totalAmount = 0;
+
+        //    var restaurant = await _context.Restaurants.Where(x => x.Id == restaurantId).Select(x => new RestaurantModel
+        //    {
+        //        Id = x.Id,
+        //        Name = x.Name,
+        //        Photo = x.Photo,
+        //        Locality = x.Locality,
+        //        City = x.City,
+        //        Cuisine = x.Cuisine
+        //    }).FirstOrDefaultAsync();
+
+        //    if (restaurant != null)
+        //    {
+        //        var foodItems = _context.FoodItems.Where(x => x.RestaurantId == restaurantId)
+        //                                .Select(x => new FoodItemModel
+        //                                {
+        //                                    Id = x.Id,
+        //                                    Name = x.Name,
+        //                                    Description = x.Description,
+        //                                    Type = x.Type,
+        //                                    Photo = x.Photo,
+        //                                    Price = x.Price
+        //                                }).ToList();
+
+        //        var cartItems = (from m in _context.Carts
+        //                         join n in _context.CartItems on m.Id equals n.CartId
+        //                         join o in _context.FoodItems on n.FoodItemId equals o.Id
+        //                         where m.UserId == userId
+        //                         select new CartItemModel
+        //                         {
+        //                             FoodItemId = n.FoodItemId,
+        //                             FoodName = o.Name,
+        //                             Price = o.Price,
+        //                             Amount = n.Quantity * o.Price,
+        //                             Quantity = n.Quantity
+        //                         }).ToList();
+
+        //        foreach (var foodItem in foodItems)
+        //        {
+        //            RestaurantMenuFoodModel menuFood = new RestaurantMenuFoodModel();
+        //            var cartItem = cartItems.Where(x => x.FoodItemId == foodItem.Id && x.Quantity > 0).FirstOrDefault();
+
+        //            if (cartItem != null)
+        //            {
+        //                menuFood.Amount = cartItem.Quantity * foodItem.Price;
+        //                menuFood.Quantity = cartItem.Quantity;
+        //            }
+
+        //            menuFood.FoodItem = foodItem;
+
+        //            menuFoods.Add(menuFood);
+        //        }
+
+        //        menu.Restaurant = restaurant;
+        //        menu.FoodItems = menuFoods;
+        //        menu.TotalQuantity = cartItems.Sum(x => x.Quantity);
+        //        menu.TotalAmount = cartItems.Sum(x => x.Amount);
+        //    }
+
+        //    return menu;
+        //}
+
+        //public async Task<RestaurantMenuModel> FilterRestaurantMenu(int userId, int restaurantId, string searchText)
+        //{
+        //    RestaurantMenuModel menu = new RestaurantMenuModel();
+        //    List<RestaurantMenuFoodModel> menuFoods = new List<RestaurantMenuFoodModel>();
+        //    int totalQuantity = 0; decimal totalAmount = 0;
+
+        //    var restaurant = await _context.Restaurants.Where(x => x.Id == restaurantId).Select(x => new RestaurantModel
+        //    {
+        //        Id = x.Id,
+        //        Name = x.Name,
+        //        Photo = x.Photo,
+        //        Locality = x.Locality,
+        //        City = x.City,
+        //        Cuisine = x.Cuisine
+        //    }).FirstOrDefaultAsync();
+
+        //    if (restaurant != null)
+        //    {
+        //        var foodItems = _context.FoodItems.Where(x => x.RestaurantId == restaurantId && x.Name.Contains(searchText))
+        //                                .Select(x => new FoodItemModel
+        //                                {
+        //                                    Id = x.Id,
+        //                                    Name = x.Name,
+        //                                    Description = x.Description,
+        //                                    Type = x.Type,
+        //                                    Photo = x.Photo,
+        //                                    Price = x.Price
+        //                                }).ToList();
+
+        //        var cartItems = (from m in _context.Carts
+        //                         join n in _context.CartItems on m.Id equals n.CartId
+        //                         join o in _context.FoodItems on n.FoodItemId equals o.Id
+        //                         where m.UserId == userId
+        //                         select new CartItemModel
+        //                         {
+        //                             FoodItemId = n.FoodItemId,
+        //                             FoodName = o.Name,
+        //                             Price = o.Price,
+        //                             Amount = n.Quantity * o.Price,
+        //                             Quantity = n.Quantity
+        //                         }).ToList();
+
+        //        foreach (var foodItem in foodItems)
+        //        {
+        //            RestaurantMenuFoodModel menuFood = new RestaurantMenuFoodModel();
+        //            var cartItem = cartItems.Where(x => x.FoodItemId == foodItem.Id && x.Quantity > 0).FirstOrDefault();
+
+        //            if (cartItem != null)
+        //            {
+        //                menuFood.Amount = cartItem.Quantity * foodItem.Price;
+        //                menuFood.Quantity = cartItem.Quantity;
+        //            }
+
+        //            menuFood.FoodItem = foodItem;
+
+        //            menuFoods.Add(menuFood);
+        //        }
+
+        //        menu.Restaurant = restaurant;
+        //        menu.FoodItems = menuFoods;
+        //        menu.TotalQuantity = cartItems.Sum(x => x.Quantity);
+        //        menu.TotalAmount = cartItems.Sum(x => x.Amount);
+        //    }
+
+        //    return menu;
+        //}
 
         /*
          
@@ -176,9 +229,9 @@ namespace Shopper.Infrastructure
 
         */
 
-        public async Task<List<RestaurantListModel>> GetRestaurants()
+        public async Task<List<RestaurantModel>> GetRestaurants()
         {
-            var restaurants = await _context.Database.SqlQuery<RestaurantListModel>($"SELECT [Id], [Name], [Photo], [LegalName], [AddressLine1], [AddressLine2], [Locality], [City], [Postcode], [Cuisine], [Latitude], [Longitude], ROUND([Distance], 2) AS [Distance] FROM (SELECT z.[Id], z.[Name], z.[Photo], z.[LegalName], z.[AddressLine1], z.[AddressLine2], z.[Locality], z.[City], z.[Postcode], z.[Cuisine], z.[Latitude], z.[Longitude], p.[Radius], p.[DistanceUnit] * DEGREES(ACOS(LEAST(1.0, COS(RADIANS(p.[LatPoint])) * COS(RADIANS(z.[Latitude])) * COS(RADIANS(p.[LongPoint] - z.[Longitude])) + SIN(RADIANS(p.[LatPoint])) * SIN(RADIANS(z.[Latitude]))))) AS [Distance] FROM [Restaurants] AS z JOIN (SELECT 13.089877255747481 AS [LatPoint], 80.19443538203495 AS [LongPoint], 50.0 AS [Radius], 111.045 AS [DistanceUnit]) AS p ON 1=1 WHERE z.[Latitude] BETWEEN p.[LatPoint] - (p.[Radius] / p.[DistanceUnit]) AND  p.[LatPoint] + (p.[Radius] / p.[DistanceUnit]) AND z.[Longitude] BETWEEN p.[LongPoint] - (p.[Radius] / (p.[DistanceUnit] * COS(RADIANS(p.[LatPoint])))) AND p.[LongPoint] + (p.[Radius] / (p.[DistanceUnit] * COS(RADIANS(p.[LatPoint]))))) AS d WHERE [Distance] <= [Radius] ORDER BY [Distance]").ToListAsync();
+            var restaurants = await _context.Database.SqlQuery<RestaurantModel>($"SELECT [Id], [Name], [Photo], [LegalName], [AddressLine1], [AddressLine2], [Locality], [City], [Postcode], [Cuisine], [Latitude], [Longitude], ROUND([Distance], 2) AS [Distance] FROM (SELECT z.[Id], z.[Name], z.[Photo], z.[LegalName], z.[AddressLine1], z.[AddressLine2], z.[Locality], z.[City], z.[Postcode], z.[Cuisine], z.[Latitude], z.[Longitude], p.[Radius], p.[DistanceUnit] * DEGREES(ACOS(LEAST(1.0, COS(RADIANS(p.[LatPoint])) * COS(RADIANS(z.[Latitude])) * COS(RADIANS(p.[LongPoint] - z.[Longitude])) + SIN(RADIANS(p.[LatPoint])) * SIN(RADIANS(z.[Latitude]))))) AS [Distance] FROM [Restaurants] AS z JOIN (SELECT 13.089877255747481 AS [LatPoint], 80.19443538203495 AS [LongPoint], 50.0 AS [Radius], 111.045 AS [DistanceUnit]) AS p ON 1=1 WHERE z.[Latitude] BETWEEN p.[LatPoint] - (p.[Radius] / p.[DistanceUnit]) AND  p.[LatPoint] + (p.[Radius] / p.[DistanceUnit]) AND z.[Longitude] BETWEEN p.[LongPoint] - (p.[Radius] / (p.[DistanceUnit] * COS(RADIANS(p.[LatPoint])))) AND p.[LongPoint] + (p.[Radius] / (p.[DistanceUnit] * COS(RADIANS(p.[LatPoint]))))) AS d WHERE [Distance] <= [Radius] ORDER BY [Distance]").ToListAsync();
             return restaurants;
         }
     }

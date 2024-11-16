@@ -17,24 +17,24 @@ namespace Shopper.Controllers
         }
 
         [HttpGet("List")]
-        public async Task<List<RestaurantListModel>> List()
+        public async Task<List<RestaurantModel>> List()
         {
             var restaurants = await _restaurant.GetRestaurants();
             return restaurants;
         }
         
         [HttpGet("Details")]
-        public async Task<RestaurantMenuModel> Details(int userId, int restaurantId)
+        public async Task<RestaurantModel> Details(int restaurantId)
         {
-            var restaurant = await _restaurant.GetRestaurantMenu(userId, restaurantId);
+            var restaurant = await _restaurant.GetRestaurant(restaurantId);
             return restaurant;
         }
 
-        [HttpGet("Filter")]
-        public async Task<RestaurantMenuModel> Details(int userId, int restaurantId, string searchText)
+        [HttpGet("FoodItems")]
+        public async Task<List<FoodItemModel>> FoodItems(int userId, int restaurantId)
         {
-            var restaurant = await _restaurant.FilterRestaurantMenu(userId, restaurantId, searchText);
-            return restaurant;
+            var foodItems = await _restaurant.GetFoodItems(userId, restaurantId);
+            return foodItems;
         }
     }
 }

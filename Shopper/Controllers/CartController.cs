@@ -29,10 +29,17 @@ namespace Shopper.Controllers
         }
 
         [HttpGet("Details")]
-        public async Task<CartDetailsModel> Details(int userId)
+        public async Task<CartModel> Details(int userId)
         {
             var cart = await _cart.GetCart(userId);
             return cart;
+        }
+
+        [HttpGet("Value")]
+        public async Task<CartValueModel> Value(int userId, int restaurantId)
+        {
+            var cartValue = await _cart.GetCartValue(userId, restaurantId);
+            return cartValue;
         }
     }
 }

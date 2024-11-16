@@ -2,7 +2,8 @@
 {
     public interface ICartService
     {
-        Task<CartDetailsModel> GetCart(int userId);
+        Task<CartModel> GetCart(int userId);
+        Task<CartValueModel> GetCartValue(int userId, int restaurantId);
         Task Add(int userId, int restaurantId, int foodId);
         Task Remove(int userId, int restaurantId, int foodId);
     }

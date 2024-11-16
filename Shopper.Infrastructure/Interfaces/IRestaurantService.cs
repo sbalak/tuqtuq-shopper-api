@@ -2,9 +2,8 @@
 {
     public interface IRestaurantService
     {
-        Task<List<RestaurantListModel>> GetRestaurants();
-
-        Task<RestaurantMenuModel> GetRestaurantMenu(int userId, int restaurantId);
-        Task<RestaurantMenuModel> FilterRestaurantMenu(int userId, int restaurantId, string searchText);
+        Task<List<RestaurantModel>> GetRestaurants();
+        Task<RestaurantModel> GetRestaurant(int restaurantId);
+        Task<List<FoodItemModel>> GetFoodItems(int userId, int restaurantId);
     }
 }

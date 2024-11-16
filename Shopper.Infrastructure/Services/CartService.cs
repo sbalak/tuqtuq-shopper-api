@@ -12,15 +12,15 @@ namespace Shopper.Infrastructure
             _context = context;
         }
 
-        public async Task<CartDetailsModel> GetCart(int userId)
+        public async Task<CartModel> GetCart(int userId)
         {
-            CartDetailsModel cart = new CartDetailsModel();
+            CartModel cart = new CartModel();
 
             var foodItems = await (from m in _context.Carts
                              join n in _context.CartItems on m.Id equals n.CartId
                              join o in _context.FoodItems on n.FoodItemId equals o.Id
                              where m.UserId == userId
-                             select new CartDetailsFoodModel
+                             select new CartItemModel
                              {
                                  FoodItemId = n.FoodItemId,
                                  FoodName = o.Name,
@@ -46,11 +46,28 @@ namespace Shopper.Infrastructure
                 cart.RestaurantLocality = restaurant.RestaurantLocality;
             }
 
-            cart.FoodItems = foodItems;
+            cart.CartItems = foodItems;
             cart.TotalQuantity = foodItems.Sum(x => x.Quantity);
             cart.TotalAmount = foodItems.Sum(x => x.Amount);
 
             return cart;
+        }
+
+        public async Task<CartValueModel> GetCartValue(int userId, int restaurantId)
+        {
+            var cartItems = await _context.CartItems.Where(x => x.Cart.UserId == userId && x.Cart.RestaurantId == restaurantId).Select(x => new 
+            {
+                Quantity = x.Quantity,
+                Amount = x.FoodItem.Price * x.Quantity
+            }).ToListAsync();
+
+            var cartValue = new CartValueModel()
+            {
+                Quantity = cartItems.Sum(x => x.Quantity),
+                Amount = cartItems.Sum(x => x.Amount)
+            };
+
+            return cartValue;
         }
 
         public async Task Add(int userId, int restaurantId, int foodId)

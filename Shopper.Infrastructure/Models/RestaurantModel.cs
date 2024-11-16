@@ -1,29 +1,27 @@
-﻿namespace Shopper.Infrastructure
+﻿using Shopper.Data;
+
+namespace Shopper.Infrastructure
 {
-    public class RestaurantMenuModel
+    public class RestaurantModel
     {
-        public RestaurantMenuModel()
-        {
-            FoodItems = new List<RestaurantMenuFoodModel>();
-        }
         public int Id { get; set; }
         public string Name { get; set; }
         public string Photo { get; set; }
         public string Locality { get; set; }
         public string City { get; set; }
         public string Cuisine { get; set; }
-        public int TotalQuantity { get; set; }
-        public decimal TotalAmount { get; set; }
-        public List<RestaurantMenuFoodModel> FoodItems { get; set; }
+        public double Distance { get; set; }
     }
-    
-    public class RestaurantMenuFoodModel
+
+    public class FoodItemModel
     {
         public int Id { get; set; }
         public string Name { get; set; }
+        public string Description { get; set; }
+        public string Type { get; set; }
         public string? Photo { get; set; }
-        public int Quantity { get; set; }
         public decimal Price { get; set; }
+        public int Quantity { get; set; }
         public decimal Amount { get; set; }
     }
 }

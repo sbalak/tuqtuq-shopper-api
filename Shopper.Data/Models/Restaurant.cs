@@ -34,9 +34,12 @@
         public int RestaurantId { get; set; }
         public int CategoryId { get; set; }
         public string Name { get; set; }
+        public string Description { get; set; }
+        public string Type { get; set; }
         public string? Photo { get; set; }
         public decimal Price { get; set; }
         public bool IsAvailable { get; set; }
+        public bool IsDisabled { get; set; }
         public DateTime DateCreated { get; set; }
         public DateTime? DateUpdated { get; set; }
         public Restaurant Restaurant { get; set; }
