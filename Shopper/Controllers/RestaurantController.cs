@@ -31,9 +31,9 @@ namespace Shopper.Controllers
         }
 
         [HttpGet("FoodItems")]
-        public async Task<List<FoodItemModel>> FoodItems(int userId, int restaurantId)
+        public async Task<List<CategorizedFoodItemModel>> FoodItems(int userId, int restaurantId, string? searchText = null)
         {
-            var foodItems = await _restaurant.GetFoodItems(userId, restaurantId);
+            var foodItems = await _restaurant.GetFoodItems(userId, restaurantId, searchText);
             return foodItems;
         }
     }

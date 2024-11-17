@@ -27,19 +27,41 @@ namespace Shopper.Infrastructure
             return restaurant;
         }
 
-        public async Task<List<FoodItemModel>> GetFoodItems(int userId, int restaurantId)
+        public async Task<List<CategorizedFoodItemModel>> GetFoodItems(int userId, int restaurantId, string? searchText = null)
         {
+            var categorizedFoodItems = new List<CategorizedFoodItemModel>();
+            var foodItems = new List<FoodItemModel>();
 
-            var foodItems = await _context.FoodItems.Where(x => x.RestaurantId == restaurantId)
-                                    .Select(x => new FoodItemModel
-                                    {
-                                        Id = x.Id,
-                                        Name = x.Name,
-                                        Description = x.Description,
-                                        Type = x.Type,
-                                        Photo = x.Photo,
-                                        Price = x.Price
-                                    }).ToListAsync();
+            var categories = await _context.Categories.Where(x => x.RestaurantId == restaurantId).OrderBy(x => x.Order).ToListAsync();
+
+            if (searchText != null)
+            {
+                foodItems = await _context.FoodItems.Where(x => x.RestaurantId == restaurantId && x.Name.Contains(searchText))
+                                        .Select(x => new FoodItemModel
+                                        {
+                                            Id = x.Id,
+                                            CategoryId = x.CategoryId,
+                                            Name = x.Name,
+                                            Description = x.Description,
+                                            Type = x.Type,
+                                            Photo = x.Photo,
+                                            Price = x.Price
+                                        }).ToListAsync();
+            }
+            else
+            {
+                foodItems = await _context.FoodItems.Where(x => x.RestaurantId == restaurantId)
+                                        .Select(x => new FoodItemModel
+                                        {
+                                            Id = x.Id,
+                                            CategoryId = x.CategoryId,
+                                            Name = x.Name,
+                                            Description = x.Description,
+                                            Type = x.Type,
+                                            Photo = x.Photo,
+                                            Price = x.Price
+                                        }).ToListAsync();
+            }
 
             var cartItems = await (from m in _context.Carts
                              join n in _context.CartItems on m.Id equals n.CartId
@@ -64,7 +86,22 @@ namespace Shopper.Infrastructure
                 }
             }
 
-            return foodItems;
+            foreach (var category in categories)
+            {
+                var categorizedFoodItem = new CategorizedFoodItemModel();
+
+                var foodItemsByCategory = foodItems.Where(x => x.CategoryId == category.Id).ToList();
+
+                if (foodItemsByCategory.Count > 0)
+                {
+                    categorizedFoodItem.Title = category.Name;
+                    categorizedFoodItem.Data = foodItemsByCategory;
+
+                    categorizedFoodItems.Add(categorizedFoodItem);
+                }
+            }
+
+            return categorizedFoodItems;
         }
 
         //public async Task<RestaurantMenuModel> GetRestaurantMenu(int userId, int restaurantId)

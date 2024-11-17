@@ -16,6 +16,7 @@ namespace Shopper.Infrastructure
     public class FoodItemModel
     {
         public int Id { get; set; }
+        public int CategoryId { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
         public string Type { get; set; }
@@ -23,5 +24,16 @@ namespace Shopper.Infrastructure
         public decimal Price { get; set; }
         public int Quantity { get; set; }
         public decimal Amount { get; set; }
+    }
+
+    public class CategorizedFoodItemModel
+    {
+        public CategorizedFoodItemModel()
+        {
+            Data = new List<FoodItemModel>();
+        }
+
+        public string Title { get; set; }
+        public List<FoodItemModel> Data { get; set; }
     }
 }
