@@ -57,7 +57,7 @@ namespace Shopper.Data
             .HasPrecision(18, 2);
 
             builder.Entity<OrderItem>()
-            .Property(r => r.Price)
+            .Property(r => r.Amount)
             .HasPrecision(18, 2);
 
             builder.Entity<FoodItem>()

@@ -14,6 +14,8 @@
         public string Cuisine { get; set; }
         public double Latitude { get; set; }
         public double Longitude { get; set; }
+        public decimal PrimaryTaxRate { get; set; }
+        public decimal SecondaryTaxRate { get; set; }
         public bool IsAvailable { get; set; }
         public bool IsDisabled { get; set; }
         public DateTime DateCreated { get; set; }
@@ -42,6 +44,7 @@
         public bool IsDisabled { get; set; }
         public DateTime DateCreated { get; set; }
         public DateTime? DateUpdated { get; set; }
+        public DateTime? DateDisabled { get; set; }
         public Restaurant Restaurant { get; set; }
         public Category Category { get; set; }
     }

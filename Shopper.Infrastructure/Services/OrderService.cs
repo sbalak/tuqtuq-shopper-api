@@ -128,7 +128,7 @@ namespace Shopper.Infrastructure.Services
                         FoodItemId = item.FoodItemId,
                         OrderId = order.Id,
                         Quantity = item.Quantity,
-                        Price = item.Amount
+                        Amount = item.Amount
                     };
 
                     orderItems.Add(orderItem);

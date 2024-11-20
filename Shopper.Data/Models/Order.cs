@@ -6,6 +6,8 @@
         public int UserId { get; set; }
         public int RestaurantId { get; set; }
         public decimal Amount { get; set; }
+        public decimal PrimaryTaxAmount { get; set; }
+        public decimal SecondaryTaxAmount { get; set; }
         public DateTime DateOrdered { get; set; }
         public DateTime? DateAccepted { get; set; }
         public DateTime? DateCompleted { get; set; }
@@ -19,7 +21,7 @@
         public int OrderId { get; set; }
         public int FoodItemId { get; set; }
         public int Quantity { get; set; }
-        public decimal Price { get; set; } // Need to change this to Amount
+        public decimal Amount { get; set; }
         public Order Order { get; set; }
         public FoodItem? FoodItem { get; set; } 
     }
