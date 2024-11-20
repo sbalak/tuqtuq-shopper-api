@@ -10,6 +10,9 @@
         public string RestaurantName { get; set; }
         public string RestaurantLocality { get; set; }
         public int TotalQuantity { get; set; }
+        public decimal TotalPrimaryTaxAmount { get; set; }
+        public decimal TotalSecondaryTaxAmount { get; set; }
+        public decimal TotalTaxAmount { get; set; }
         public decimal TotalAmount { get; set; }
         public List<CartItemModel> CartItems { get; set; }
     }

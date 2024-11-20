@@ -15,6 +15,7 @@ namespace Shopper.Infrastructure
         public async Task<CartModel> GetCart(int userId)
         {
             CartModel cart = new CartModel();
+            decimal primaryTaxRate = 0, secondaryTaxRate = 0;
 
             var foodItems = await (from m in _context.Carts
                              join n in _context.CartItems on m.Id equals n.CartId
@@ -38,17 +39,30 @@ namespace Shopper.Infrastructure
                                   {
                                       RestaurantId = n.Id,
                                       RestaurantName = n.Name,
-                                      RestaurantLocality = n.Locality
+                                      RestaurantLocality = n.Locality,
+                                      RestauarantPrimaryTaxRate = n.PrimaryTaxRate,
+                                      RestaurantSecondaryTaxRate = n.SecondaryTaxRate
                                   }).FirstOrDefaultAsync();
 
                 cart.RestaurantId = restaurant.RestaurantId;
                 cart.RestaurantName = restaurant.RestaurantName;
                 cart.RestaurantLocality = restaurant.RestaurantLocality;
+
+                primaryTaxRate = restaurant.RestauarantPrimaryTaxRate;
+                secondaryTaxRate = restaurant.RestaurantSecondaryTaxRate;
             }
 
+            var primaryTax = (foodItems.Sum(x => x.Amount) * primaryTaxRate) / 100;
+            var secondaryTax = (foodItems.Sum(x => x.Amount) * secondaryTaxRate) / 100;
+            var totalTax = primaryTax + secondaryTax;
+            var totalAmount = foodItems.Sum(x => x.Amount) + totalTax; 
+
             cart.CartItems = foodItems;
+            cart.TotalPrimaryTaxAmount = Math.Round(primaryTax, 2);
+            cart.TotalSecondaryTaxAmount = Math.Round(secondaryTax, 2);
+            cart.TotalTaxAmount = Math.Round(totalTax, 2);
             cart.TotalQuantity = foodItems.Sum(x => x.Quantity);
-            cart.TotalAmount = foodItems.Sum(x => x.Amount);
+            cart.TotalAmount = Math.Round(totalAmount, 2);
 
             return cart;
         }
