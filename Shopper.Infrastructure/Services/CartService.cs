@@ -26,6 +26,7 @@ namespace Shopper.Infrastructure
                                  FoodItemId = n.FoodItemId,
                                  FoodName = o.Name,
                                  Quantity = n.Quantity,
+                                 TaxablePrice = o.TaxablePrice,
                                  Price = o.Price,
                                  Amount = n.Quantity * o.Price
                              }).ToListAsync();

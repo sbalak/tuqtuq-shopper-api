@@ -56,8 +56,20 @@ namespace Shopper.Data
             .Property(r => r.Amount)
             .HasPrecision(18, 2);
 
+            builder.Entity<Order>()
+            .Property(r => r.PrimaryTaxAmount)
+            .HasPrecision(18, 2);
+
+            builder.Entity<Order>()
+            .Property(r => r.SecondaryTaxAmount)
+            .HasPrecision(18, 2);
+
             builder.Entity<OrderItem>()
             .Property(r => r.Amount)
+            .HasPrecision(18, 2);
+
+            builder.Entity<FoodItem>()
+            .Property(r => r.TaxablePrice)
             .HasPrecision(18, 2);
 
             builder.Entity<FoodItem>()

@@ -45,6 +45,7 @@ namespace Shopper.Infrastructure
                                             Description = x.Description,
                                             Type = x.Type,
                                             Photo = x.Photo,
+                                            TaxablePrice = x.TaxablePrice,
                                             Price = x.Price
                                         }).ToListAsync();
             }
@@ -59,6 +60,7 @@ namespace Shopper.Infrastructure
                                             Description = x.Description,
                                             Type = x.Type,
                                             Photo = x.Photo,
+                                            TaxablePrice = x.TaxablePrice,
                                             Price = x.Price
                                         }).ToListAsync();
             }
@@ -70,6 +72,7 @@ namespace Shopper.Infrastructure
                              select new CartItemModel
                              {
                                  FoodItemId = n.FoodItemId,
+                                 TaxablePrice = o.TaxablePrice,
                                  Price = o.Price,
                                  Quantity = n.Quantity,
                                  Amount = n.Quantity * o.Price
