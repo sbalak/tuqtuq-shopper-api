@@ -10,10 +10,11 @@
         public string RestaurantName { get; set; }
         public string RestaurantLocality { get; set; }
         public int TotalQuantity { get; set; }
-        public decimal TotalPrimaryTaxAmount { get; set; }
-        public decimal TotalSecondaryTaxAmount { get; set; }
-        public decimal TotalTaxAmount { get; set; }
-        public decimal TotalAmount { get; set; }
+        public string TotalPrimaryTaxAmount { get; set; }
+        public string TotalSecondaryTaxAmount { get; set; }
+        public string TotalTaxAmount { get; set; }
+        public string TotalTaxableAmount { get; set; }
+        public string TotalAmount { get; set; }
         public List<CartItemModel> CartItems { get; set; }
     }
     
@@ -22,9 +23,10 @@
         public int FoodItemId { get; set; }
         public string FoodName { get; set; }
         public int Quantity { get; set; }
-        public decimal TaxablePrice { get; set; }
-        public decimal Price { get; set; }
-        public decimal Amount { get; set; }
+        public string TaxablePrice { get; set; }
+        public string Price { get; set; }
+        public string TaxableAmount { get; set; }
+        public string Amount { get; set; }
     }
 
     public class CartValueModel

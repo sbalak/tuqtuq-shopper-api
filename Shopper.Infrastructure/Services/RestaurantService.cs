@@ -69,12 +69,13 @@ namespace Shopper.Infrastructure
                              join n in _context.CartItems on m.Id equals n.CartId
                              join o in _context.FoodItems on n.FoodItemId equals o.Id
                              where m.UserId == userId
-                             select new CartItemModel
+                             select new
                              {
                                  FoodItemId = n.FoodItemId,
                                  TaxablePrice = o.TaxablePrice,
                                  Price = o.Price,
                                  Quantity = n.Quantity,
+                                 TaxableAmount = n.Quantity * o.TaxablePrice,
                                  Amount = n.Quantity * o.Price
                              }).ToListAsync();
 
@@ -85,6 +86,7 @@ namespace Shopper.Infrastructure
                 if (cartItem != null)
                 {
                     foodItem.Quantity = cartItem.Quantity;
+                    foodItem.TaxableAmount = cartItem.TaxableAmount;
                     foodItem.Amount = cartItem.Amount;
                 }
             }

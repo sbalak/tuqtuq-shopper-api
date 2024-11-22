@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Shopper.Data;
+using System.Globalization;
 
 namespace Shopper.Infrastructure
 {
@@ -15,24 +16,42 @@ namespace Shopper.Infrastructure
         public async Task<CartModel> GetCart(int userId)
         {
             CartModel cart = new CartModel();
+            List<CartItemModel> cartItems = new List<CartItemModel>();
             decimal primaryTaxRate = 0, secondaryTaxRate = 0;
 
             var foodItems = await (from m in _context.Carts
                              join n in _context.CartItems on m.Id equals n.CartId
                              join o in _context.FoodItems on n.FoodItemId equals o.Id
                              where m.UserId == userId
-                             select new CartItemModel
+                             select new
                              {
                                  FoodItemId = n.FoodItemId,
                                  FoodName = o.Name,
                                  Quantity = n.Quantity,
                                  TaxablePrice = o.TaxablePrice,
                                  Price = o.Price,
+                                 TaxableAmount = n.Quantity * o.TaxablePrice,
                                  Amount = n.Quantity * o.Price
                              }).ToListAsync();
 
             if (foodItems.Count > 0)
             {
+                foreach (var foodItem in foodItems)
+                {
+                    CartItemModel cartItem = new CartItemModel()
+                    {
+                        FoodItemId = foodItem.FoodItemId,
+                        FoodName = foodItem.FoodName,
+                        Quantity = foodItem.Quantity,
+                        TaxablePrice = Math.Round(foodItem.TaxablePrice, 2).ToString("C", CultureInfo.CreateSpecificCulture("en-IN")),
+                        Price = Math.Round(foodItem.Price, 2).ToString("C", CultureInfo.CreateSpecificCulture("en-IN")),
+                        TaxableAmount = Math.Round(foodItem.TaxableAmount, 2).ToString("C", CultureInfo.CreateSpecificCulture("en-IN")),
+                        Amount = Math.Round(foodItem.Amount, 2).ToString("C", CultureInfo.CreateSpecificCulture("en-IN"))
+                    };
+
+                    cartItems.Add(cartItem);
+                }
+
                 var restaurant = await (from m in _context.Carts
                                   join n in _context.Restaurants on m.RestaurantId equals n.Id
                                   where m.UserId == userId
@@ -53,17 +72,19 @@ namespace Shopper.Infrastructure
                 secondaryTaxRate = restaurant.RestaurantSecondaryTaxRate;
             }
 
-            var primaryTax = (foodItems.Sum(x => x.Amount) * primaryTaxRate) / 100;
-            var secondaryTax = (foodItems.Sum(x => x.Amount) * secondaryTaxRate) / 100;
+            var totalTaxableAmount = foodItems.Sum(x => x.TaxableAmount);
+            var primaryTax = (totalTaxableAmount * primaryTaxRate) / 100;
+            var secondaryTax = (totalTaxableAmount * secondaryTaxRate) / 100;
             var totalTax = primaryTax + secondaryTax;
-            var totalAmount = foodItems.Sum(x => x.Amount) + totalTax; 
+            var totalAmount = totalTaxableAmount + totalTax; 
 
-            cart.CartItems = foodItems;
-            cart.TotalPrimaryTaxAmount = Math.Round(primaryTax, 2);
-            cart.TotalSecondaryTaxAmount = Math.Round(secondaryTax, 2);
-            cart.TotalTaxAmount = Math.Round(totalTax, 2);
+            cart.CartItems = cartItems;
+            cart.TotalPrimaryTaxAmount = Math.Round(primaryTax, 2).ToString("C", CultureInfo.CreateSpecificCulture("en-IN"));
+            cart.TotalSecondaryTaxAmount = Math.Round(secondaryTax, 2).ToString("C", CultureInfo.CreateSpecificCulture("en-IN"));
+            cart.TotalTaxAmount = Math.Round(totalTax, 2).ToString("C", CultureInfo.CreateSpecificCulture("en-IN"));
             cart.TotalQuantity = foodItems.Sum(x => x.Quantity);
-            cart.TotalAmount = Math.Round(totalAmount, 2);
+            cart.TotalTaxableAmount = Math.Round(totalTaxableAmount, 2).ToString("C", CultureInfo.CreateSpecificCulture("en-IN"));
+            cart.TotalAmount = Math.Round(totalAmount, 2).ToString("C", CultureInfo.CreateSpecificCulture("en-IN"));
 
             return cart;
         }
