@@ -45,7 +45,7 @@ namespace Shopper.Infrastructure
                                             Description = x.Description,
                                             Type = x.Type,
                                             Photo = x.Photo,
-                                            TaxablePrice = x.TaxablePrice,
+                                            TaxablePrice = x.Price / (100 + x.Restaurant.PrimaryTaxRate + x.Restaurant.SecondaryTaxRate),
                                             Price = x.Price
                                         }).ToListAsync();
             }
@@ -60,7 +60,7 @@ namespace Shopper.Infrastructure
                                             Description = x.Description,
                                             Type = x.Type,
                                             Photo = x.Photo,
-                                            TaxablePrice = x.TaxablePrice,
+                                            TaxablePrice = x.Price / (100 + x.Restaurant.PrimaryTaxRate + x.Restaurant.SecondaryTaxRate),
                                             Price = x.Price
                                         }).ToListAsync();
             }
@@ -72,11 +72,7 @@ namespace Shopper.Infrastructure
                              select new
                              {
                                  FoodItemId = n.FoodItemId,
-                                 TaxablePrice = o.TaxablePrice,
-                                 Price = o.Price,
-                                 Quantity = n.Quantity,
-                                 TaxableAmount = n.Quantity * o.TaxablePrice,
-                                 Amount = n.Quantity * o.Price
+                                 Quantity = n.Quantity
                              }).ToListAsync();
 
             foreach (var foodItem in foodItems)
@@ -86,8 +82,6 @@ namespace Shopper.Infrastructure
                 if (cartItem != null)
                 {
                     foodItem.Quantity = cartItem.Quantity;
-                    foodItem.TaxableAmount = cartItem.TaxableAmount;
-                    foodItem.Amount = cartItem.Amount;
                 }
             }
 

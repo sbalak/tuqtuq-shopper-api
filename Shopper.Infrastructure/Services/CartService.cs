@@ -28,10 +28,8 @@ namespace Shopper.Infrastructure
                                  FoodItemId = n.FoodItemId,
                                  FoodName = o.Name,
                                  Quantity = n.Quantity,
-                                 TaxablePrice = o.TaxablePrice,
                                  Price = o.Price,
-                                 TaxableAmount = n.Quantity * o.TaxablePrice,
-                                 Amount = n.Quantity * o.Price
+                                 Amount = n.Quantity * o.Price,
                              }).ToListAsync();
 
             if (foodItems.Count > 0)
@@ -43,9 +41,7 @@ namespace Shopper.Infrastructure
                         FoodItemId = foodItem.FoodItemId,
                         FoodName = foodItem.FoodName,
                         Quantity = foodItem.Quantity,
-                        TaxablePrice = Math.Round(foodItem.TaxablePrice, 2).ToString("C", CultureInfo.CreateSpecificCulture("en-IN")),
                         Price = Math.Round(foodItem.Price, 2).ToString("C", CultureInfo.CreateSpecificCulture("en-IN")),
-                        TaxableAmount = Math.Round(foodItem.TaxableAmount, 2).ToString("C", CultureInfo.CreateSpecificCulture("en-IN")),
                         Amount = Math.Round(foodItem.Amount, 2).ToString("C", CultureInfo.CreateSpecificCulture("en-IN"))
                     };
 
@@ -72,7 +68,7 @@ namespace Shopper.Infrastructure
                 secondaryTaxRate = restaurant.RestaurantSecondaryTaxRate;
             }
 
-            var totalTaxableAmount = foodItems.Sum(x => x.TaxableAmount);
+            var totalTaxableAmount = (foodItems.Sum(x => x.Amount) / (100 + primaryTaxRate + secondaryTaxRate)) * 100;
             var primaryTax = (totalTaxableAmount * primaryTaxRate) / 100;
             var secondaryTax = (totalTaxableAmount * secondaryTaxRate) / 100;
             var totalTax = primaryTax + secondaryTax;

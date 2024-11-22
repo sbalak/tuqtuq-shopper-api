@@ -23,9 +23,7 @@
         public int FoodItemId { get; set; }
         public string FoodName { get; set; }
         public int Quantity { get; set; }
-        public string TaxablePrice { get; set; }
         public string Price { get; set; }
-        public string TaxableAmount { get; set; }
         public string Amount { get; set; }
     }
 
