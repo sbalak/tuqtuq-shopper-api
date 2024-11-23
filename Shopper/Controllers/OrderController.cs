@@ -17,14 +17,14 @@ namespace Shopper.Controllers
         }
 
         [HttpGet("List")]
-        public async Task<List<OrderListModel>> List(int userId)
+        public async Task<List<OrderModel>> List(int userId)
         {
             var orders = await _order.GetOrders(userId);
             return orders;
         }
 
         [HttpGet("Details")]
-        public async Task<OrderDetailsModel> Details(int id)
+        public async Task<OrderModel> Details(int id)
         {
             var order = await _order.GetOrder(id);
             return order;
