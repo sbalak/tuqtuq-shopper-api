@@ -17,9 +17,9 @@ namespace Shopper.Controllers
         }
 
         [HttpGet("List")]
-        public async Task<List<RestaurantModel>> List()
+        public async Task<List<RestaurantModel>> List(string? query = "", int? page = 1)
         {
-            var restaurants = await _restaurant.GetRestaurants();
+            var restaurants = await _restaurant.GetRestaurants(query, page);
             return restaurants;
         }
         
