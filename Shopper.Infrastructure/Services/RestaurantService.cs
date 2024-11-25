@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Shopper.Data;
+using System.Runtime.CompilerServices;
 
 namespace Shopper.Infrastructure
 {
@@ -260,8 +261,10 @@ namespace Shopper.Infrastructure
 		          z.[Longitude] BETWEEN p.[LongPoint] - (p.[Radius] / (p.[DistanceUnit] * COS(RADIANS(p.[LatPoint])))) AND 
 							           p.[LongPoint] + (p.[Radius] / (p.[DistanceUnit] * COS(RADIANS(p.[LatPoint]))))
         ) AS d
-        WHERE [Distance] <= [Radius]
+        WHERE [Distance] <= [Radius] AND [NAME] LIKE '%' + @query + '%'
         ORDER BY [Distance]
+        OFFSET @offset ROWS 
+        FETCH NEXT @fetch ROWS ONLY
 
         */
 
@@ -269,7 +272,7 @@ namespace Shopper.Infrastructure
         {
             int offset = (Convert.ToInt32(page) - 1) * 10;
             int fetch = Convert.ToInt32(page) * 10;
-            var restaurants = await _context.Database.SqlQuery<RestaurantModel>($"SELECT [Id], [Name], [Photo], [LegalName], [AddressLine1], [AddressLine2], [Locality], [City], [Postcode], [Cuisine], [Latitude], [Longitude], ROUND([Distance], 2) AS [Distance] FROM (SELECT z.[Id], z.[Name], z.[Photo], z.[LegalName], z.[AddressLine1], z.[AddressLine2], z.[Locality], z.[City], z.[Postcode], z.[Cuisine], z.[Latitude], z.[Longitude], p.[Radius], p.[DistanceUnit] * DEGREES(ACOS(LEAST(1.0, COS(RADIANS(p.[LatPoint])) * COS(RADIANS(z.[Latitude])) * COS(RADIANS(p.[LongPoint] - z.[Longitude])) + SIN(RADIANS(p.[LatPoint])) * SIN(RADIANS(z.[Latitude]))))) AS [Distance] FROM [Restaurants] AS z JOIN (SELECT 13.089877255747481 AS [LatPoint], 80.19443538203495 AS [LongPoint], 50.0 AS [Radius], 111.045 AS [DistanceUnit]) AS p ON 1=1 WHERE z.[Latitude] BETWEEN p.[LatPoint] - (p.[Radius] / p.[DistanceUnit]) AND  p.[LatPoint] + (p.[Radius] / p.[DistanceUnit]) AND z.[Longitude] BETWEEN p.[LongPoint] - (p.[Radius] / (p.[DistanceUnit] * COS(RADIANS(p.[LatPoint])))) AND p.[LongPoint] + (p.[Radius] / (p.[DistanceUnit] * COS(RADIANS(p.[LatPoint]))))) AS d WHERE [Distance] <= [Radius] AND [NAME] LIKE '%{query}%' ORDER BY [Distance] OFFSET {offset} ROWS FETCH NEXT {fetch} ROWS ONLY").ToListAsync();
+            var restaurants = await _context.Database.SqlQuery<RestaurantModel>($"EXEC [dbo].[GetRestaurants] @query = {query}, @offset = {offset}, @fetch = {fetch};").ToListAsync();
             return restaurants;
         }
     }
