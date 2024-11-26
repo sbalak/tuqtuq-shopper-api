@@ -17,12 +17,19 @@ namespace Shopper.Controllers
         }
 
         [HttpGet("List")]
-        public async Task<List<RestaurantModel>> List(string? query = "", int? page = 1)
+        public async Task<List<RestaurantModel>> List(string? query = "", int? page = 1, int? pageSize = 10)
         {
-            var restaurants = await _restaurant.GetRestaurants(query, page);
+            var restaurants = await _restaurant.GetRestaurants(query, page, pageSize);
             return restaurants;
         }
-        
+
+        [HttpGet("RecentlyVisited")]
+        public async Task<List<RestaurantModel>> RecentlyVisited(int? page = 1, int? pageSize = 10)
+        {
+            var restaurants = await _restaurant.GetRestaurantsRecentlyVisited(page, pageSize);
+            return restaurants;
+        }
+
         [HttpGet("Details")]
         public async Task<RestaurantModel> Details(int restaurantId)
         {
