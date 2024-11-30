@@ -13,6 +13,12 @@ namespace Shopper.Infrastructure
         public double Distance { get; set; }
     }
 
+    public class RestaurantRecentlyVisitedModel : RestaurantModel
+    {
+        public string FormattedDateOrdered { get; set; }
+        public DateTime DateOrdered { get; set; }
+    }
+
     public class FoodItemModel
     {
         public int Id { get; set; }

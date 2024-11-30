@@ -24,7 +24,7 @@ namespace Shopper.Controllers
         }
 
         [HttpGet("RecentlyVisited")]
-        public async Task<List<RestaurantModel>> RecentlyVisited(int? page = 1, int? pageSize = 10)
+        public async Task<List<RestaurantRecentlyVisitedModel>> RecentlyVisited(int? page = 1, int? pageSize = 10)
         {
             var restaurants = await _restaurant.GetRestaurantsRecentlyVisited(page, pageSize);
             return restaurants;
