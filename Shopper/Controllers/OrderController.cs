@@ -17,9 +17,9 @@ namespace Shopper.Controllers
         }
 
         [HttpGet("List")]
-        public async Task<List<OrderModel>> List(int userId)
+        public async Task<List<OrderModel>> List(int userId, int? page = 1, int? pageSize = 10)
         {
-            var orders = await _order.GetOrders(userId);
+            var orders = await _order.GetOrders(userId, page, pageSize);
             return orders;
         }
 

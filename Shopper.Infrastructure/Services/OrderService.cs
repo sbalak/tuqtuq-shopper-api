@@ -14,24 +14,29 @@ namespace Shopper.Infrastructure.Services
             _context = context;
         }
 
-        public async Task<List<OrderModel>> GetOrders(int userId)
+        public async Task<List<OrderModel>> GetOrders(int userId, int? page = 1, int? pageSize = 10)
         {
             List<OrderModel> orders = new List<OrderModel>();
 
+            int offset = (Convert.ToInt32(page) - 1) * Convert.ToInt32(pageSize);
+            int fetch = Convert.ToInt32(page) * Convert.ToInt32(pageSize);
+
             var ordersList = await (from m in _context.Orders
-                             join n in _context.Restaurants on m.RestaurantId equals n.Id
-                             where m.UserId == userId
-                             select new
-                             {
-                                 OrderId = m.Id,
-                                 RestaurantId = n.Id,
-                                 RestaurantName = n.Name,
-                                 RestaurantLocality = n.Locality,
-                                 TotalTaxableAmount = m.TaxableAmount,
-                                 TotalAmount = m.Amount,
-                                 PrimaryTaxAmount = m.PrimaryTaxAmount,
-                                 SecondaryTaxAmount = m.SecondaryTaxAmount,
-                             }).ToListAsync();
+                                    join n in _context.Restaurants on m.RestaurantId equals n.Id
+                                    where m.UserId == userId
+                                    select new
+                                    {
+                                        OrderId = m.Id,
+                                        RestaurantId = n.Id,
+                                        RestaurantName = n.Name,
+                                        RestaurantLocality = n.Locality,
+                                        TotalTaxableAmount = m.TaxableAmount,
+                                        TotalAmount = m.Amount,
+                                        PrimaryTaxAmount = m.PrimaryTaxAmount,
+                                        SecondaryTaxAmount = m.SecondaryTaxAmount,
+                                        DateOrdered = m.DateOrdered,
+                                        FormattedDateOrdered = m.DateOrdered.ToString("dd MMM yy, hh:mm tt")
+                                    }).OrderByDescending(m => m.DateOrdered).Skip(offset).Take(fetch).ToListAsync();
 
             foreach (var ordersItem in ordersList)
             {
@@ -46,7 +51,8 @@ namespace Shopper.Infrastructure.Services
                     TotalTaxAmount = Math.Round(ordersItem.PrimaryTaxAmount + ordersItem.SecondaryTaxAmount, 2).ToString("C", CultureInfo.CreateSpecificCulture("en-IN")),
                     TotalTaxableAmount = Math.Round(ordersItem.TotalTaxableAmount, 2).ToString("C", CultureInfo.CreateSpecificCulture("en-IN")),
                     TotalAmount = Math.Round(ordersItem.TotalAmount,
-                    2).ToString("C", CultureInfo.CreateSpecificCulture("en-IN"))
+                    2).ToString("C", CultureInfo.CreateSpecificCulture("en-IN")),
+                    DateOrdered = ordersItem.FormattedDateOrdered
                 };
 
                 var foodItems = await (from m in _context.Orders
@@ -111,6 +117,8 @@ namespace Shopper.Infrastructure.Services
                                           TotalAmount = m.Amount,
                                           PrimaryTaxAmount = m.PrimaryTaxAmount,
                                           SecondaryTaxAmount = m.SecondaryTaxAmount,
+                                          DateOrdered = m.DateOrdered,
+                                          FormattedDateOrdered = m.DateOrdered.ToString("dd MMM yy, hh:mm tt")
                                       }).FirstOrDefaultAsync();
 
             var foodItems = await (from m in _context.Orders
@@ -137,6 +145,7 @@ namespace Shopper.Infrastructure.Services
                 order.TotalTaxAmount = Math.Round(orderDetails.PrimaryTaxAmount + orderDetails.SecondaryTaxAmount, 2).ToString("C", CultureInfo.CreateSpecificCulture("en-IN"));
                 order.TotalTaxableAmount = Math.Round(orderDetails.TotalTaxableAmount, 2).ToString("C", CultureInfo.CreateSpecificCulture("en-IN"));
                 order.TotalAmount = Math.Round(orderDetails.TotalAmount, 2).ToString("C", CultureInfo.CreateSpecificCulture("en-IN"));
+                order.DateOrdered = orderDetails.FormattedDateOrdered;
 
                 foreach (var foodItem in foodItems)
                 {

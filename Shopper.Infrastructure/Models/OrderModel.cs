@@ -15,6 +15,7 @@
         public string TotalTaxAmount { get; set; }
         public string TotalTaxableAmount { get; set; }
         public string TotalAmount { get; set; }
+        public string DateOrdered { get; set; }
         public List<OrderItemModel> OrderItems { get; set; }
     }
 
