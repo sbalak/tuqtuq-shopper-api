@@ -3,12 +3,12 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Shopper.Data
 {
-    public class ShopperContext : IdentityDbContext<User, Role, int, UserClaim, UserRole, UserLogin, RoleClaim, UserToken>
+    public class ShopperContext : DbContext
     {
         public ShopperContext(DbContextOptions<ShopperContext> options) : base(options)
         {
         }
-                public DbSet<Category> Categories { get; set; }
+        public DbSet<Category> Categories { get; set; }
         public DbSet<FoodItem> FoodItems { get; set; }
         public DbSet<Order> Orders { get; set; }
         public DbSet<OrderItem> OrderItems { get; set; }
@@ -16,6 +16,7 @@ namespace Shopper.Data
         public DbSet<Restaurant> Restaurants { get; set; }
         public DbSet<Cart> Carts { get; set; }
         public DbSet<CartItem> CartItems { get; set; }
+        public DbSet<User> Users { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -25,14 +26,6 @@ namespace Shopper.Data
             builder.Entity<User>().Property(m => m.LastName).HasMaxLength(50);
             builder.Entity<User>().Property(m => m.Latitude).HasMaxLength(200);
             builder.Entity<User>().Property(m => m.Longitude).HasMaxLength(200);
-
-            builder.Entity<User>(b => { b.ToTable("Users"); });
-            builder.Entity<UserClaim>(b => { b.ToTable("UserClaims"); });
-            builder.Entity<UserLogin>(b => { b.ToTable("UserLogins"); });
-            builder.Entity<UserToken>(b => { b.ToTable("UserTokens"); });
-            builder.Entity<Role>(b => { b.ToTable("Roles"); });
-            builder.Entity<RoleClaim>(b => { b.ToTable("RoleClaims"); });
-            builder.Entity<UserRole>(b => { b.ToTable("UserRoles"); });
 
             builder.Entity<CartItem>()
             .HasOne(r => r.FoodItem)
