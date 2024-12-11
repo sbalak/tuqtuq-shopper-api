@@ -36,6 +36,8 @@ namespace Shopper.Infrastructure.Extensions
                 IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Jwt:Key"])),
                 ValidateIssuer = false,
                 ValidateAudience = false,
+                ValidateLifetime = false,
+                RequireExpirationTime = false
             };
             return new JwtSecurityTokenHandler().ValidateToken(token, validation, out _);
         }
