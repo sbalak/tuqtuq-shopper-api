@@ -16,32 +16,38 @@ namespace Shopper.Infrastructure
 
         #region Query for GetRestaurants()
 
-        /*
-        SELECT [Id], [Name], [Photo], [LegalName], [AddressLine1], [AddressLine2], [Locality], [City], [Postcode], [Cuisine], [Latitude], [Longitude], ROUND([Distance], 2) AS [Distance]
-        FROM (
-	        SELECT z.[Id], z.[Name], z.[Photo], z.[LegalName], z.[AddressLine1], z.[AddressLine2], z.[Locality], z.[City], z.[Postcode], z.[Cuisine], z.[Latitude], z.[Longitude], p.[Radius],
-		            p.[DistanceUnit]
-				        * DEGREES(ACOS(LEAST(1.0, COS(RADIANS(p.[LatPoint]))
-                        * COS(RADIANS(z.[Latitude]))
-                        * COS(RADIANS(p.[LongPoint] - z.[Longitude]))
-                        + SIN(RADIANS(p.[LatPoint]))
-                        * SIN(RADIANS(z.[Latitude]))))) AS [Distance]
-	        FROM [Restaurants] AS z
-	        JOIN (
-		        SELECT @latpoint AS [LatPoint], 
-		               @longpoint AS [LongPoint],
-			           50.0 AS [Radius],
-			           111.045 AS [DistanceUnit]
-            ) AS p ON 1=1
-	        WHERE z.[Latitude] BETWEEN p.[LatPoint] - (p.[Radius] / p.[DistanceUnit]) AND 
-	                                    p.[LatPoint] + (p.[Radius] / p.[DistanceUnit]) AND
-		            z.[Longitude] BETWEEN p.[LongPoint] - (p.[Radius] / (p.[DistanceUnit] * COS(RADIANS(p.[LatPoint])))) AND 
-							            p.[LongPoint] + (p.[Radius] / (p.[DistanceUnit] * COS(RADIANS(p.[LatPoint]))))
-        ) AS d
-        WHERE [Distance] <= [Radius] AND [NAME] LIKE '%' + @query + '%'
-        ORDER BY [Distance]
-        OFFSET @offset ROWS 
-        FETCH NEXT @fetch ROWS ONLY        
+        /*    
+    @query nvarchar(MAX) = '',
+    @latpoint float = 0,
+	@longpoint float = 0,
+	@offset int = 0,
+	@fetch int = 10
+
+            SELECT [Id], [Name], [Photo], [LegalName], [AddressLine1], [AddressLine2], [Locality], [City], [Postcode], [Cuisine], [Latitude], [Longitude], ROUND([Distance], 2) AS [Distance]
+            FROM (
+	            SELECT z.[Id], z.[Name], z.[Photo], z.[LegalName], z.[AddressLine1], z.[AddressLine2], z.[Locality], z.[City], z.[Postcode], z.[Cuisine], z.[Latitude], z.[Longitude], p.[Radius],
+		                p.[DistanceUnit]
+				            * DEGREES(ACOS(LEAST(1.0, COS(RADIANS(p.[LatPoint]))
+                            * COS(RADIANS(z.[Latitude]))
+                            * COS(RADIANS(p.[LongPoint] - z.[Longitude]))
+                            + SIN(RADIANS(p.[LatPoint]))
+                            * SIN(RADIANS(z.[Latitude]))))) AS [Distance]
+	            FROM [Restaurants] AS z
+	            JOIN (
+		            SELECT @latpoint AS [LatPoint], 
+		                   @longpoint AS [LongPoint],
+			               50.0 AS [Radius],
+			               111.045 AS [DistanceUnit]
+                ) AS p ON 1=1
+	            WHERE z.[Latitude] BETWEEN p.[LatPoint] - (p.[Radius] / p.[DistanceUnit]) AND 
+	                                        p.[LatPoint] + (p.[Radius] / p.[DistanceUnit]) AND
+		                z.[Longitude] BETWEEN p.[LongPoint] - (p.[Radius] / (p.[DistanceUnit] * COS(RADIANS(p.[LatPoint])))) AND 
+							                p.[LongPoint] + (p.[Radius] / (p.[DistanceUnit] * COS(RADIANS(p.[LatPoint]))))
+            ) AS d
+            WHERE [Distance] <= [Radius] AND [NAME] LIKE '%' + @query + '%'
+            ORDER BY [Distance]
+            OFFSET @offset ROWS 
+            FETCH NEXT @fetch ROWS ONLY
         */
 
         #endregion
@@ -58,47 +64,53 @@ namespace Shopper.Infrastructure
         #region Query for GetRestaurantsRecentlylVisited
 
         /*
-        SELECT [Id], [Name], [Photo], [LegalName], [AddressLine1], [AddressLine2], [Locality], [City], [Postcode], [Cuisine], [Latitude], [Longitude], ROUND([Distance], 2) AS [Distance], [DateOrdered], FORMAT([DateOrdered], 'dd MMM yy, hh:mm tt', 'en-gb') AS [FormattedDateOrdered]
-	    FROM (
-		    SELECT z.[Id], z.[Name], z.[Photo], z.[LegalName], z.[AddressLine1], z.[AddressLine2], z.[Locality], z.[City], z.[Postcode], z.[Cuisine], z.[Latitude], z.[Longitude], p.[Radius], w.[DateOrdered],
-					    p.[DistanceUnit]
-						    * DEGREES(ACOS(LEAST(1.0, COS(RADIANS(p.[LatPoint]))
-						    * COS(RADIANS(z.[Latitude]))
-						    * COS(RADIANS(p.[LongPoint] - z.[Longitude]))
-						    + SIN(RADIANS(p.[LatPoint]))
-						    * SIN(RADIANS(z.[Latitude]))))) AS [Distance]
-		    FROM Restaurants AS z
-		    INNER JOIN (
-			    SELECT t.[RestaurantId], MAX(t.[DateOrdered]) AS [DateOrdered]
-			    FROM [Orders] AS t
-			    WHERE UserId = 1
-			    GROUP BY t.[RestaurantId]
-		    ) AS w ON w.RestaurantId = z.Id
-		    JOIN (
-			    SELECT @latpoint AS [LatPoint], 
-				        @longpoint AS [LongPoint],
-				        50.0 AS [Radius],
-				        111.045 AS [DistanceUnit]
-		    ) AS p ON 1=1
-		    WHERE z.[Latitude] BETWEEN p.[LatPoint] - (p.[Radius] / p.[DistanceUnit]) AND 
-									    p.[LatPoint] + (p.[Radius] / p.[DistanceUnit]) AND
-				    z.[Longitude] BETWEEN p.[LongPoint] - (p.[Radius] / (p.[DistanceUnit] * COS(RADIANS(p.[LatPoint])))) AND 
-									    p.[LongPoint] + (p.[Radius] / (p.[DistanceUnit] * COS(RADIANS(p.[LatPoint]))))
-	    ) AS d
-	    WHERE [Distance] <= [Radius]
-	    ORDER BY [DateOrdered] DESC
-	    OFFSET @offset ROWS 
-	    FETCH NEXT @fetch ROWS ONLY
+    @user int = null,
+    @latpoint float = 0,
+	@longpoint float = 0,
+    @offset int = 0,
+    @fetch int = 10
+
+	        SELECT [Id], [Name], [Photo], [LegalName], [AddressLine1], [AddressLine2], [Locality], [City], [Postcode], [Cuisine], [Latitude], [Longitude], ROUND([Distance], 2) AS [Distance], [DateOrdered], FORMAT([DateOrdered], 'dd MMM yy, hh:mm tt', 'en-gb') AS [FormattedDateOrdered]
+	        FROM (
+		        SELECT z.[Id], z.[Name], z.[Photo], z.[LegalName], z.[AddressLine1], z.[AddressLine2], z.[Locality], z.[City], z.[Postcode], z.[Cuisine], z.[Latitude], z.[Longitude], p.[Radius], w.[DateOrdered],
+					        p.[DistanceUnit]
+						        * DEGREES(ACOS(LEAST(1.0, COS(RADIANS(p.[LatPoint]))
+						        * COS(RADIANS(z.[Latitude]))
+						        * COS(RADIANS(p.[LongPoint] - z.[Longitude]))
+						        + SIN(RADIANS(p.[LatPoint]))
+						        * SIN(RADIANS(z.[Latitude]))))) AS [Distance]
+		        FROM Restaurants AS z
+		        INNER JOIN (
+			        SELECT t.[RestaurantId], MAX(t.[DateOrdered]) AS [DateOrdered]
+			        FROM [Orders] AS t
+			        WHERE UserId = @user
+			        GROUP BY t.[RestaurantId]
+		        ) AS w ON w.RestaurantId = z.Id
+		        JOIN (
+			        SELECT @latpoint AS [LatPoint], 
+				           @longpoint AS [LongPoint],
+				           50.0 AS [Radius],
+				           111.045 AS [DistanceUnit]
+		        ) AS p ON 1=1
+		        WHERE z.[Latitude] BETWEEN p.[LatPoint] - (p.[Radius] / p.[DistanceUnit]) AND 
+									        p.[LatPoint] + (p.[Radius] / p.[DistanceUnit]) AND
+				        z.[Longitude] BETWEEN p.[LongPoint] - (p.[Radius] / (p.[DistanceUnit] * COS(RADIANS(p.[LatPoint])))) AND 
+									        p.[LongPoint] + (p.[Radius] / (p.[DistanceUnit] * COS(RADIANS(p.[LatPoint]))))
+	        ) AS d
+	        WHERE [Distance] <= [Radius]
+	        ORDER BY [DateOrdered] DESC
+	        OFFSET @offset ROWS 
+	        FETCH NEXT @fetch ROWS ONLY 
          */
 
         #endregion
 
-        public async Task<List<RestaurantRecentlyVisitedModel>> GetRestaurantsRecentlyVisited(double latitude, double longitude, int? page = 1, int? pageSize = 10)
+        public async Task<List<RestaurantRecentlyVisitedModel>> GetRestaurantsRecentlyVisited(int userId, double latitude, double longitude, int? page = 1, int? pageSize = 10)
         {
             int offset = (Convert.ToInt32(page) - 1) * Convert.ToInt32(pageSize);
             int fetch = Convert.ToInt32(page) * Convert.ToInt32(pageSize);
 
-            var restaurants = await _context.Database.SqlQuery<RestaurantRecentlyVisitedModel>($"EXEC [dbo].[GetRestaurantsRecentlyVisited] @latpoint={latitude}, @longpoint = {longitude}, @offset = {offset}, @fetch = {fetch};").ToListAsync();
+            var restaurants = await _context.Database.SqlQuery<RestaurantRecentlyVisitedModel>($"EXEC [dbo].[GetRestaurantsRecentlyVisited] @user={userId}, @latpoint={latitude}, @longpoint = {longitude}, @offset = {offset}, @fetch = {fetch};").ToListAsync();
             return restaurants;
         }
 

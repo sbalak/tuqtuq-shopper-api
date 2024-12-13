@@ -33,7 +33,7 @@ namespace Shopper.Infrastructure
 
             if (phoneNumber)
             {
-                var otp = Assist.GenerateOTP();
+                var otp = "123456";//Assist.GenerateOTP();
                 var user = await _context.Users.Where(x => x.Phone == username).FirstOrDefaultAsync();
 
                 if (user == null)
