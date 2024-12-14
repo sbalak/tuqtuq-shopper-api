@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Shopper.Data;
 using System.Runtime.CompilerServices;
+using System.Text.RegularExpressions;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace Shopper.Infrastructure
@@ -114,18 +115,35 @@ namespace Shopper.Infrastructure
             return restaurants;
         }
 
-        public async Task<RestaurantModel> GetRestaurant(int restaurantId)
-        {
-            var restaurant = await _context.Restaurants.Where(x => x.Id== restaurantId).Select(x => new RestaurantModel
-            {
-                Id = x.Id,
-                Name = x.Name,
-                Photo = x.Photo,
-                Locality = x.Locality,
-                City = x.City,
-                Cuisine = x.Cuisine
-            }).FirstOrDefaultAsync();
+        #region Query for GetRestaurant
 
+        /*
+	    @restaurant int = null,
+        @latpoint float = 0,
+	    @longpoint float = 0
+
+	        SELECT z.[Id], z.[Name], z.[Photo], z.[Locality], z.[City], z.[Postcode], z.[Cuisine], 
+                ROUND(p.[DistanceUnit]
+                    * DEGREES(ACOS(LEAST(1.0, COS(RADIANS(p.[LatPoint]))
+                    * COS(RADIANS(z.[Latitude]))
+                    * COS(RADIANS(p.[LongPoint] - z.[Longitude]))
+                    + SIN(RADIANS(p.[LatPoint]))
+                    * SIN(RADIANS(z.[Latitude]))))), 2) AS [Distance]
+	        FROM [Restaurants] AS z
+	        JOIN (
+		        SELECT @latpoint AS [LatPoint], 
+				        @longpoint AS [LongPoint],
+				        50.0 AS [Radius],
+				        111.045 AS [DistanceUnit]
+	        ) AS p ON 1=1
+	        WHERE z.Id = @restaurant
+         */
+
+        #endregion
+
+        public async Task<RestaurantModel> GetRestaurant(int restaurantId, double latitude, double longitude)
+        {
+            var restaurant = _context.Database.SqlQuery<RestaurantModel>($"EXEC [dbo].[GetRestaurant] @restaurant={restaurantId}, @latpoint={latitude}, @longpoint = {longitude};").AsEnumerable().FirstOrDefault();
             return restaurant;
         }
 

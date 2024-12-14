@@ -31,9 +31,9 @@ namespace Shopper.Controllers
         }
 
         [HttpGet("Details")]
-        public async Task<RestaurantModel> Details(int restaurantId)
+        public async Task<RestaurantModel> Details(int restaurantId, double latitude, double longitude)
         {
-            var restaurant = await _restaurant.GetRestaurant(restaurantId);
+            var restaurant = await _restaurant.GetRestaurant(restaurantId, latitude, longitude);
             return restaurant;
         }
 

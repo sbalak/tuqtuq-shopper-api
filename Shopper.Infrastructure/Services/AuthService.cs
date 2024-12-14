@@ -97,7 +97,7 @@ namespace Shopper.Infrastructure
 
             if (phoneNumber)
             {
-                var user = await _context.Users.Where(x => x.Phone == username && x.OtpExpiry > DateTime.Now).FirstOrDefaultAsync();
+                var user = await _context.Users.Where(x => x.Phone == username && x.Otp == code && x.OtpExpiry > DateTime.Now).FirstOrDefaultAsync();
 
                 if (user != null)
                 {
