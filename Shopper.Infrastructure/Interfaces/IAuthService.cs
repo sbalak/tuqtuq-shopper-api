@@ -1,6 +1,4 @@
-﻿using Shopper.Data;
-
-namespace Shopper.Infrastructure
+﻿namespace Shopper.Infrastructure
 {
     public interface IAuthService
     {

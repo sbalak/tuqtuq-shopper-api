@@ -1,18 +1,5 @@
-﻿using Azure;
-using Microsoft.AspNetCore.Http.HttpResults;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Identity.Client;
-using Microsoft.IdentityModel.Tokens;
+﻿using Microsoft.EntityFrameworkCore;
 using Shopper.Data;
-using Shopper.Infrastructure.Extensions;
-using System.ComponentModel.DataAnnotations;
-using System.IdentityModel.Tokens.Jwt;
-using System.Reflection.Emit;
-using System.Security.Claims;
-using System.Security.Cryptography;
-using System.Text;
 
 namespace Shopper.Infrastructure
 {

@@ -18,9 +18,22 @@ namespace Shopper.Infrastructure
             return userId;
         }
 
-        public async Task<User> GetUser(int userId)
+        public async Task<UserModel> GetUser(int userId)
         {
-            var user = await _context.Users.Where(x => x.Id == userId).FirstOrDefaultAsync();
+            var user = await _context.Users.Where(x => x.Id == userId).Select(x => new UserModel 
+                { 
+                    Id = x.Id,
+                    Email = x.Email,
+                    Phone = x.Phone,
+                    FirstName = x.FirstName,
+                    LastName = x.LastName,
+                    Latitude = x.Latitude,
+                    Longitude = x.Longitude,
+                    RefreshToken = x.RefreshToken,
+                    RefreshTokenExpiry = x.RefreshTokenExpiry,
+                    Otp = x.Otp,
+                    OtpExpiry = x.OtpExpiry
+                }).FirstOrDefaultAsync();
             return user;
         }
 
@@ -39,7 +52,11 @@ namespace Shopper.Infrastructure
 
         public async Task<UserCoordinatesModel> GetCoordinates(int userId)
         {
-            var coordinates = await _context.Users.Where(x => x.Id == userId).Select(x => new UserCoordinatesModel { Latitude = x.Latitude, Longitude = x.Longitude }).FirstOrDefaultAsync();
+            var coordinates = await _context.Users.Where(x => x.Id == userId).Select(x => new UserCoordinatesModel 
+                { 
+                    Latitude = x.Latitude, 
+                    Longitude = x.Longitude 
+                }).FirstOrDefaultAsync();
             return coordinates;
         }
 

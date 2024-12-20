@@ -1,8 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Shopper.Data;
-using System.Runtime.CompilerServices;
-using System.Text.RegularExpressions;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace Shopper.Infrastructure
 {

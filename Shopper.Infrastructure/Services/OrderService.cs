@@ -1,7 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Shopper.Data;
 using System.Globalization;
-using System.Security.Cryptography.X509Certificates;
 
 namespace Shopper.Infrastructure.Services
 {

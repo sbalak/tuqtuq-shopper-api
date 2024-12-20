@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Shopper.Data;
 using Shopper.Infrastructure;
 
 namespace Shopper.Controllers
@@ -25,7 +24,7 @@ namespace Shopper.Controllers
         }
 
         [HttpGet("Details")]
-        public async Task<User> Details(int userId)
+        public async Task<UserModel> Details(int userId)
         {
             var user = await _user.GetUser(userId);
             return user;

@@ -1,7 +1,4 @@
-﻿using Microsoft.AspNetCore.Authentication.BearerToken;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Shopper.Data;
+﻿using Microsoft.AspNetCore.Mvc;
 using Shopper.Infrastructure;
 
 namespace Shopper.Web.Controllers

@@ -4,7 +4,6 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Shopper.Data;
 using Shopper.Infrastructure;
-using Shopper.Infrastructure.Extensions;
 using Shopper.Infrastructure.Services;
 using System.Text;
 
