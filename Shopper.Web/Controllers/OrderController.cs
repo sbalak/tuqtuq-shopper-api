@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Shopper.Infrastructure;
 
-namespace Shopper.Controllers
+namespace Shopper.Web.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
