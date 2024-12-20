@@ -16,13 +16,6 @@ namespace Shopper.Controllers
             _user = user;
         }
 
-        [HttpGet("Id")]
-        public async Task<int> Id(string email)
-        {
-            var userId = await _user.GetUserId(email);
-            return userId;
-        }
-
         [HttpGet("Details")]
         public async Task<UserModel> Details(int userId)
         {

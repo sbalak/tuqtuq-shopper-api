@@ -12,12 +12,6 @@ namespace Shopper.Infrastructure
             _context = context;
         }
 
-        public async Task<int> GetUserId(string email)
-        {
-            var userId = await _context.Users.Where(x => x.Email == email).Select(x => x.Id).FirstOrDefaultAsync();
-            return userId;
-        }
-
         public async Task<UserModel> GetUser(int userId)
         {
             var user = await _context.Users.Where(x => x.Id == userId).Select(x => new UserModel 
