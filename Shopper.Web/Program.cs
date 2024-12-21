@@ -46,20 +46,20 @@ builder.Services.AddSwaggerGen(opt =>
     });
 
     opt.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
         {
+            new OpenApiSecurityScheme
             {
-                new OpenApiSecurityScheme
+                Reference = new OpenApiReference
                 {
-                    Reference = new OpenApiReference
-                    {
-                        Type=ReferenceType.SecurityScheme,
-                        Id="Bearer"
-                    }
-                },
-                new string[]{}
-            }
-        });
+                    Type=ReferenceType.SecurityScheme,
+                    Id="Bearer"
+                }
+            },
+            new string[]{}
+        }
     });
+});
 
 builder.Services.AddTransient<IAuthService, AuthService>();
 builder.Services.AddTransient<ICartService, CartService>();
