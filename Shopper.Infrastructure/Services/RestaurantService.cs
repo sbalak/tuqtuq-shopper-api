@@ -21,9 +21,9 @@ namespace Shopper.Infrastructure
 	@offset int = 0,
 	@fetch int = 10
 
-            SELECT [Id], [Name], [Photo], [LegalName], [AddressLine1], [AddressLine2], [Locality], [City], [Postcode], [Cuisine], [Latitude], [Longitude], ROUND([Distance], 2) AS [Distance]
+            SELECT [Id], [Name], [PreparationTime], [Photo], [LegalName], [AddressLine1], [AddressLine2], [Locality], [City], [Postcode], [Cuisine], [Latitude], [Longitude], ROUND([Distance], 2) AS [Distance]
             FROM (
-	            SELECT z.[Id], z.[Name], z.[Photo], z.[LegalName], z.[AddressLine1], z.[AddressLine2], z.[Locality], z.[City], z.[Postcode], z.[Cuisine], z.[Latitude], z.[Longitude], p.[Radius],
+	            SELECT z.[Id], z.[Name], z.[PreparationTime], z.[Photo], z.[LegalName], z.[AddressLine1], z.[AddressLine2], z.[Locality], z.[City], z.[Postcode], z.[Cuisine], z.[Latitude], z.[Longitude], p.[Radius],
 		                p.[DistanceUnit]
 				            * DEGREES(ACOS(LEAST(1.0, COS(RADIANS(p.[LatPoint]))
                             * COS(RADIANS(z.[Latitude]))
@@ -59,7 +59,7 @@ namespace Shopper.Infrastructure
             return restaurants;
         }
 
-        #region Query for GetRestaurantsRecentlylVisited
+        #region Query for GetRestaurantsRecentlyVisited
 
         /*
     @user int = null,
@@ -68,9 +68,9 @@ namespace Shopper.Infrastructure
     @offset int = 0,
     @fetch int = 10
 
-	        SELECT [Id], [Name], [Photo], [LegalName], [AddressLine1], [AddressLine2], [Locality], [City], [Postcode], [Cuisine], [Latitude], [Longitude], ROUND([Distance], 2) AS [Distance], [DateOrdered], FORMAT([DateOrdered], 'dd MMM yy, hh:mm tt', 'en-gb') AS [FormattedDateOrdered]
+	        SELECT [Id], [Name], [PreparationTime], [Photo], [LegalName], [AddressLine1], [AddressLine2], [Locality], [City], [Postcode], [Cuisine], [Latitude], [Longitude], ROUND([Distance], 2) AS [Distance], [DateOrdered], FORMAT([DateOrdered], 'dd MMM yy, hh:mm tt', 'en-gb') AS [FormattedDateOrdered]
 	        FROM (
-		        SELECT z.[Id], z.[Name], z.[Photo], z.[LegalName], z.[AddressLine1], z.[AddressLine2], z.[Locality], z.[City], z.[Postcode], z.[Cuisine], z.[Latitude], z.[Longitude], p.[Radius], w.[DateOrdered],
+		        SELECT z.[Id], z.[Name], z.[PreparationTime], z.[Photo], z.[LegalName], z.[AddressLine1], z.[AddressLine2], z.[Locality], z.[City], z.[Postcode], z.[Cuisine], z.[Latitude], z.[Longitude], p.[Radius], w.[DateOrdered],
 					        p.[DistanceUnit]
 						        * DEGREES(ACOS(LEAST(1.0, COS(RADIANS(p.[LatPoint]))
 						        * COS(RADIANS(z.[Latitude]))
@@ -119,7 +119,7 @@ namespace Shopper.Infrastructure
         @latpoint float = 0,
 	    @longpoint float = 0
 
-	        SELECT z.[Id], z.[Name], z.[Photo], z.[Locality], z.[City], z.[Postcode], z.[Cuisine], 
+	        SELECT z.[Id], z.[Name], z.[PreparationTime], z.[Photo], z.[Locality], z.[City], z.[Postcode], z.[Cuisine], 
                 ROUND(p.[DistanceUnit]
                     * DEGREES(ACOS(LEAST(1.0, COS(RADIANS(p.[LatPoint]))
                     * COS(RADIANS(z.[Latitude]))

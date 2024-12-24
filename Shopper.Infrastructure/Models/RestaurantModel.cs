@@ -6,6 +6,7 @@ namespace Shopper.Infrastructure
     {
         public int Id { get; set; }
         public string Name { get; set; }
+        public int PreparationTime { get; set; }
         public string Photo { get; set; }
         public string Locality { get; set; }
         public string City { get; set; }
