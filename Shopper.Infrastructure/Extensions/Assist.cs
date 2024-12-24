@@ -1,4 +1,6 @@
-﻿using System.Security.Cryptography;
+﻿using Shopper.Data;
+using System.Globalization;
+using System.Security.Cryptography;
 
 namespace Shopper.Infrastructure
 {
@@ -10,6 +12,11 @@ namespace Shopper.Infrastructure
             var bytes = new byte[6];
             rng.GetBytes(bytes);
             return BitConverter.ToUInt32(bytes, 0).ToString().Substring(0, 6);
+        }
+
+        public static string Rupee(decimal price)
+        {
+            return Math.Round(price, 2).ToString("C", CultureInfo.CreateSpecificCulture("en-IN"));
         }
     }
 }

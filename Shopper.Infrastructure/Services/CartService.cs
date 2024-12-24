@@ -41,8 +41,8 @@ namespace Shopper.Infrastructure
                         FoodItemId = foodItem.FoodItemId,
                         FoodName = foodItem.FoodName,
                         Quantity = foodItem.Quantity,
-                        Price = Math.Round(foodItem.Price, 2).ToString("C", CultureInfo.CreateSpecificCulture("en-IN")),
-                        Amount = Math.Round(foodItem.Amount, 2).ToString("C", CultureInfo.CreateSpecificCulture("en-IN"))
+                        Price = Assist.Rupee(foodItem.Price),
+                        Amount = Assist.Rupee(foodItem.Amount)
                     };
 
                     cartItems.Add(cartItem);
@@ -75,12 +75,12 @@ namespace Shopper.Infrastructure
             var totalAmount = totalTaxableAmount + totalTax; 
 
             cart.CartItems = cartItems;
-            cart.TotalPrimaryTaxAmount = Math.Round(primaryTax, 2).ToString("C", CultureInfo.CreateSpecificCulture("en-IN"));
-            cart.TotalSecondaryTaxAmount = Math.Round(secondaryTax, 2).ToString("C", CultureInfo.CreateSpecificCulture("en-IN"));
-            cart.TotalTaxAmount = Math.Round(totalTax, 2).ToString("C", CultureInfo.CreateSpecificCulture("en-IN"));
+            cart.TotalPrimaryTaxAmount = Assist.Rupee(primaryTax);
+            cart.TotalSecondaryTaxAmount = Assist.Rupee(secondaryTax);
+            cart.TotalTaxAmount = Assist.Rupee(totalTax);
             cart.TotalQuantity = foodItems.Sum(x => x.Quantity);
-            cart.TotalTaxableAmount = Math.Round(totalTaxableAmount, 2).ToString("C", CultureInfo.CreateSpecificCulture("en-IN"));
-            cart.TotalAmount = Math.Round(totalAmount, 2).ToString("C", CultureInfo.CreateSpecificCulture("en-IN"));
+            cart.TotalTaxableAmount = Assist.Rupee(totalTaxableAmount);
+            cart.TotalAmount = Assist.Rupee(totalAmount);
 
             return cart;
         }
