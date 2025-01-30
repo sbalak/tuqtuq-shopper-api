@@ -63,6 +63,7 @@ builder.Services.AddSwaggerGen(opt =>
 
 builder.Services.AddTransient<IAuthService, AuthService>();
 builder.Services.AddTransient<ICartService, CartService>();
+builder.Services.AddTransient<IOfferService, OfferService>();
 builder.Services.AddTransient<IOrderService, OrderService>();
 builder.Services.AddTransient<IRestaurantService, RestaurantService>();
 builder.Services.AddTransient<IUserService, UserService>();

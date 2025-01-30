@@ -15,6 +15,7 @@
         public string TotalTaxAmount { get; set; }
         public string TotalTaxableAmount { get; set; }
         public string TotalAmount { get; set; }
+        public OfferModel Offer { get; set; }
         public List<CartItemModel> CartItems { get; set; }
     }
     
